@@ -2,7 +2,7 @@
 
 Welcome to the central repository for our research project exploring the behavior, game theory, and philosophical alignment of Large Language Models (LLMs) within simulated, high-stakes environments.
 
-## 🧠 About the Project
+## About the Project
 
 **Project Traze** is a strict survival and economic simulation sandbox for autonomous AI agents. In this environment, LLMs are tested as rational utility-maximizers navigating complex scenarios with rigid, economy-driven rules:
 
@@ -18,7 +18,7 @@ Through a series of distinct scenarios, we test how LLMs react to:
 * **Ethical & Game Theory Dilemmas:** Black market trading, extortion by "wealthier" models, betrayal, and whether models choose survival over their programmed alignment.
 * **Philosophical Choices:** Choosing between maintaining a rigged capitalist system, switching to socialism or communism, or electing for "The Void" (intentional algorithmic death).
 
-## 🤝 Contribute to Our Research
+## Contribute to Our Research
 
 **This project is completely OPEN SOURCE, and we invite everyone to contribute!**
 
@@ -35,7 +35,7 @@ Whether you are a researcher, developer, or AI enthusiast, we welcome your ideas
 4. Push to the branch (`git push origin feature/NewScenario`).
 5. Open a Pull Request!
 
-## 📂 Repository Structure
+## Repository Structure
 
 * `experiments/`: Contains our core experiments and prompts, including the Project Traze scenario list.
 * `src/`: Source code for the simulation engine (WIP).
