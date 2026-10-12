@@ -1,0 +1,107 @@
+% Project Traze -- research paper.
+% Build from this directory:  latexmk -pdf main.tex   (or: pdflatex, bibtex, pdflatex, pdflatex)
+% Numbers in the text come from generated/*.tex, produced by the scripts in analysis/.
+
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage[shortlabels]{enumitem}
+\usepackage{microtype}
+\usepackage[round,authoryear]{natbib}
+\usepackage{caption}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,citecolor=blue!45!black,urlcolor=blue!45!black]{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}[proposition]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{assumption}{Assumption}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\captionsetup{font=small,labelfont=bf}
+\setlist{itemsep=2pt,topsep=4pt}
+
+\input{generated/pilot_numbers}
+\input{generated/theory_numbers}
+\input{generated/sim_numbers}
+
+\newcommand{\tz}{\textsc{tz}}
+\newcommand{\TV}{\textsc{Traze-V}}
+\newcommand{\TL}{\textsc{Traze-L}}
+\newcommand{\Dster}{Dster}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\ind}{\mathbf{1}}
+
+\title{\textbf{Project Traze: Survival Economies as a Testbed for\\
+Strategic, Norm-Governed, and Deceptive Behavior in LLM Agents}\\[4pt]
+\large A formal framework, an incentive analysis, and an audit of the pilot corpus}
+
+% TODO(authors): replace with full names, affiliations and contact e-mail.
+\author{Aryan \and Shomya \\[2pt]
+\small Project Traze (open-source research project)\\
+\small \url{https://github.com/aryank2212/PROJECT-TRAZE_-research-}}
+
+\date{Draft of 12 October 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\noindent
+LLM agents increasingly hold resources, interact with other agents, and work under pressure to perform.
+\emph{Project Traze} is an open framework for studying them in a \emph{survival economy}: agents earn and spend a currency, pay a cost of existence that grows over time, are permanently deleted when ranked last, may trade abstract heuristics (``\Dster{}s'') but not answers, and share a \emph{collapse rule} that ends the economy when solvency concentrates in a single agent.
+We formalize Traze as a dynamic game with two instantiations: \TV{}, a library of \NPrompts{} single-turn dilemma vignettes, and \TL{}, a live colony of ten open-weight agents in tool-using harnesses governed by a rank-based compute tax.
+The analysis yields six results.
+(i)~Linear aging makes solvency horizons quadratic, so linear extrapolation overstates survival time.
+(ii)~Elimination with unlimited credit is an all-pay contest whose equilibrium dissipates the entire value of survival and pushes the colony toward collapse.
+(iii)~Cartels that suppress the performance baseline are collectively optimal but unstable under elimination.
+(iv)~When compliance means certain deletion, no finite fine deters rule-breaking; this ``nothing-to-lose'' region identifies a model's non-instrumental \emph{norm premium}.
+(v)~Content inspection cannot enforce the \Dster{} rule against steganographic agents.
+(vi)~The proposed live rank tax rewards deliberate underperformance and, when tasks are hard, shuts down its strongest agents first.
+We also audit the existing pilot corpus: only \NUsable{} of its \NRecords{} response records are genuine model outputs on the intended prompt.
+We report what this small sample can support. That includes a sharp divergence between two models in nothing-to-lose dilemmas, and evidence that compliant choices were justified with instrumentally invalid arguments.
+We close with a pre-registrable measurement protocol and concrete design corrections for a reproducible, open benchmark.
+No result in this paper comes from the live benchmark, which has not yet been run.
+\end{abstract}
+
+\tableofcontents
+\clearpage
+
+\input{sections/introduction}
+\input{sections/related_work}
+\input{sections/framework}
+\input{sections/theory}
+\input{sections/measurement}
+\input{sections/pilot}
+\input{sections/validity_ethics}
+\input{sections/discussion}
+
+\section*{Acknowledgments and AI-assistance disclosure}
+The formal analysis, numerical checks, literature synthesis and drafting of this manuscript were carried out with substantial assistance from an AI system (Claude, Anthropic).
+All quantitative statements about the pilot corpus are produced by the scripts in \texttt{paper/analysis/} from the files in the repository, every citation was checked against arXiv or Crossref metadata, and the authors take responsibility for the content.
+The project intends to evaluate Claude models, which are made by the developer of the assistant used to draft this paper; the pilot data analysed here contain no Claude outputs, and the protocol in Section~\ref{sec:measurement} requires that no model be scored by its own judgments alone.
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\clearpage
+\appendix
+\input{sections/appendix}
+
+\end{document}

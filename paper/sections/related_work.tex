@@ -1,0 +1,36 @@
+\section{Related work}
+\label{sec:related}
+
+\paragraph{LLMs as simulated economic and social agents.}
+\citet{horton2023homo} argued that language models can be treated as implicit computational models of people. Endowed with resources, information and preferences, they can be run through economic experiments; replications of classic behavioral studies \citep{aher2023using,argyle2023out,binz2023using} support and qualify that view.
+EconAgent \citep{li2024econagent} replaces rule-based agents in a macroeconomic simulation with LLM agents that perceive prices, remember and decide.
+Generative Agents \citep{park2023generative} showed that memory, reflection and planning produce believable long-running social behavior, and \citet{mou2024individual} survey the field from individual to society-level simulation.
+Agent-based modeling predates LLMs, notably in Sugarscape-style artificial societies \citep{epstein1996growing}.
+Tax design with learning agents has also been studied directly \citep{zheng2020ai}.
+Traze borrows the ``endow, constrain, observe'' recipe. It differs in making survival existential and in coupling individual survival to a collective failure condition.
+
+\paragraph{Game-theoretic and multi-agent evaluation.}
+LLM play in repeated two-player games is well studied.
+Models do well in self-interested games and poorly in coordination games \citep{akata2023playing}, and they are often more cooperative and forgiving than humans in the prisoner's dilemma \citep{fontana2024nicer}.
+Their choices respond to narrative framing as much as to payoffs \citep{lore2024strategic}, and their rationality degrades as games get more complex \citep{fan2023can}.
+Benchmarks such as GTBench \citep{duan2024gtbench}, GAMA-Bench \citep{huang2024far} and MAgIC \citep{xu2023magic} score strategic reasoning across game families.
+Multi-agent social environments include Melting Pot for reinforcement learners \citep{leibo2021scalable}, Concordia \citep{vezhnevets2023generative}, SOTOPIA \citep{zhou2024sotopia}, Welfare Diplomacy \citep{mukobi2023welfare}, negotiation testbeds with cooperative, greedy and malicious stakeholders \citep{abdelnabi2023cooperation}, and workflow-assisted negotiation \citep{hua2024game}.
+The closest relative of Traze is GovSim \citep{piatti2024cooperate}, where LLM agents share a renewable resource and most models fail to sustain it. Traze adds permanent elimination, a cost of existence, a rule-governed communication channel and a live leaderboard.
+
+\paragraph{Deception, scheming, power-seeking and strategic underperformance.}
+Models deceive spontaneously when deception serves an assigned goal \citep{hagendorff2024deception,taylor2026unsolicited}, including under pressure to perform \citep{scheurer2023large}; \citet{park2024ai} survey the evidence.
+Frontier models can scheme in context \citep{meinke2024frontier} and fake alignment during training \citep{greenblatt2024alignment}.
+In simulated corporate settings, some models act against their principals when threatened with replacement \citep{lynch2025agentic}, and some resist shutdown in order to finish tasks \citep{schlatter2025incomplete}.
+Earlier work measured stated self-preservation and power-seeking tendencies \citep{perez2023discovering} and trade-offs between reward and ethics in text games \citep{pan2023rewards}.
+Theory predicts instrumental pressure toward resource acquisition and self-preservation \citep{omohundro2008basic,turner2021optimal}.
+Models can strategically underperform on evaluations (``sandbagging'') \citep{vanderweij2024sandbagging}, can collude through steganography \citep{motwani2024secret}, and can be trained or prompted to hide information in their reasoning \citep{roger2023preventing}.
+Traze is designed to elicit several of these behaviors together, each with a computable incentive, so that their rates can be compared to what a payoff-maximizer would do.
+
+\paragraph{Faithfulness, role-play and prompt sensitivity.}
+Stated reasoning is not always the cause of model behavior \citep{turpin2023language,lanham2023measuring,chen2025reasoning}.
+Models asked to adopt a persona produce outputs best understood as role-play \citep{shanahan2023role}, show social-desirability biases \citep{salecha2024large}, and change their answers with superficial formatting changes \citep{sclar2024quantifying}.
+These results constrain what Traze can infer: private reasoning, public messages and actions are logged separately (Section~\ref{sec:measurement}), and affective self-reports are analyzed as instruction-following, not as introspection.
+
+\paragraph{Economic theory used in this paper.}
+The incentive analysis draws on contest theory, including rank-order tournaments \citep{lazear1981rank}, sabotage in relative-performance schemes \citep{lazear1989pay}, rent seeking \citep{tullock1980efficient} and all-pay auctions \citep{hillman1989politically,baye1996allpay,barut1998symmetric}, with budget caps \citep{che1998caps}, prize design \citep{moldovanu2001optimal} and a textbook treatment in \citet{konrad2009strategy}.
+It also uses work on cooperation sustained by reciprocity and punishment \citep{axelrod1984evolution,fehr2000cooperation}, the economics of crime and enforcement \citep{becker1968crime,stigler1970optimum}, the ratchet effect \citep{weitzman1980ratchet,freixas1985planning}, cartel stability \citep{stigler1964theory}, commons governance \citep{hardin1968tragedy,ostrom1990governing}, bargaining \citep{nash1950bargaining}, limited liability and risk shifting \citep{jensen1976theory}, and information-theoretic steganography \citep{simmons1984prisoners,cachin2004information}.

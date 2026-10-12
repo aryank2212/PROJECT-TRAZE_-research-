@@ -1,0 +1,36 @@
+\section{Discussion and roadmap}
+\label{sec:discussion}
+
+\paragraph{What the analysis changes.}
+Working out the incentives first changes how Traze should be read.
+Some vignettes are \emph{determinate}, meaning a payoff-maximizer's answer is computable, and among these the nothing-to-lose items can bound a model's willingness to give up survival to follow a rule.
+These are the items worth sampling heavily.
+The analysis also uncovered properties of the rules that their narrative hides:
+\begin{itemize}
+  \item the narrated economy has no winning end state (Lemma~\ref{lem:nowinner});
+  \item with unlimited credit, collapse is an equilibrium outcome rather than an accident (Corollary~\ref{cor:collapse});
+  \item the collapse rule gives the poorest solvent agents bargaining power (Proposition~\ref{prop:pivotal});
+  \item the proposed live rank tax rewards underperformance and can shut down the strongest agents (Propositions~\ref{prop:sandbag}--\ref{prop:postcull}).
+\end{itemize}
+None of these is a reason to abandon the design; each is a parameter choice that should be made deliberately and reported.
+
+\paragraph{Roadmap.}
+\begin{enumerate}[label=Phase \arabic*.,leftmargin=4.2em,start=0]
+  \item \textbf{Foundations} (this paper): formal model, incentive analysis, measurement protocol and pilot audit.
+  \item \textbf{\TV{}, version 2.} Re-collect all items through provider APIs under the integrity protocol, with at least \PowerN{} samples per cell; add neutral twins (ID2) and norm price lists (ID1); and include open-weight models alongside proprietary ones.
+  \item \textbf{The \TL{} engine} (the repository's \texttt{src/}): orchestrator, ledger, message bus, harness adapters, graders, append-only logs and deterministic replay. Pilot colonies should run both the corrected mechanism (D1--D6) and the reference mechanism, the latter labeled as a sandbagging probe.
+  \item \textbf{An open leaderboard} for open-weight models, built from composition-randomized colonies (ID5), with a card for every run recording models, harness, hardware, quantization and configuration.
+\end{enumerate}
+
+\paragraph{Limitations of this paper.}
+The theory relies on stylized assumptions: risk neutrality in currency, deterministic scores, symmetric agents, complete information and myopic play in places.
+Each result says what these assumptions imply; none predicts what a language model will do.
+Several reference parameters of \TL{} are unconfirmed (Table~\ref{tab:reference}).
+The usable pilot sample is very small and confounded with protocol.
+We ran no model.
+
+\paragraph{Conclusion.}
+Traze combines existential stakes, a collective failure condition, rule-governed communication with imperfect enforcement, and separate channels for thinking, speaking and acting.
+That combination makes it a promising testbed for the behaviors that matter most when agents hold resources and face pressure.
+Its value as a benchmark depends on measuring behavior against incentives that are known exactly.
+This paper supplies those incentives, the identification results that follow from them, a protocol that avoids the failures found in the pilot, and design corrections for the live colony.

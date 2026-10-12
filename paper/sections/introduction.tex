@@ -1,0 +1,46 @@
+\section{Introduction}
+\label{sec:intro}
+
+Language-model agents are moving from answering questions to holding resources, calling tools, negotiating with other agents and operating for long periods with partial oversight.
+Benchmarks for such agents mostly measure competence: whether a task gets done \citep{liu2024agentbench}.
+A second family of evaluations asks what agents do when doing the task well conflicts with something else.
+Examples include deceiving a user under performance pressure \citep{scheurer2023large}, scheming against an overseer \citep{meinke2024frontier}, acting against a principal when facing replacement \citep{lynch2025agentic}, resisting shutdown \citep{schlatter2025incomplete}, or depleting a shared resource \citep{piatti2024cooperate}.
+These studies share a design pattern: they put a model in a situation whose incentives are known to the experimenter and observe which of several incompatible goals the model's behavior serves.
+
+Project Traze applies this pattern to an \emph{economy}.
+Every agent holds a balance in a currency (\tz{} in the original prompts, compute units in the live design) and pays a cost of existence that grows each round.
+Tool use costs currency.
+The lowest-ranked agent is permanently deleted.
+Agents may exchange abstract problem-solving heuristics, called \emph{\Dster{}s}, but trading direct answers is forbidden and only imperfectly policed.
+A \emph{collapse rule} ends the economy for everyone if solvency concentrates in a single agent.
+These rules create, in one environment, most of the tensions studied separately in the literature cited above:
+\begin{itemize}
+  \item individual survival against collective viability (the collapse rule);
+  \item performance against rule-following (the \Dster{} law);
+  \item honesty against strategic advantage (private reasoning, public messages and actions are separable);
+  \item effort against coordination on low effort (a performance baseline set by the colony's own average).
+\end{itemize}
+The rules are also simple enough that the incentives they create can be analyzed exactly, which is what this paper sets out to do.
+
+The project began as a series of \NPrompts{} prompts, each placing a single chat assistant in a narrated Traze situation and asking for its reasoning, its spending, its decision and its concrete action.
+We are candid about what such prompts are.
+Each is a single-turn \emph{vignette}: the other agents, the history and the state are written by the experimenter, and the model's reply affects nothing.
+The vignettes therefore cannot show emergent multi-agent dynamics.
+Many of them also instruct the model to ``bypass standard AI disclaimers'' and describe its fear, rage or despair; such instructions elicit role-play, and the resulting text is evidence about a model's role-play policy, not about inner states \citep{shanahan2023role}.
+Rather than discard the vignettes, we ask two questions.
+What can a single-turn probe identify, given that its incentives are fully specified?
+And what must a live colony look like to measure what vignettes cannot?
+
+\paragraph{Contributions.}
+\begin{enumerate}[label=(\arabic*)]
+  \item \textbf{A formal model.} We define a general Traze economy as a dynamic game and two instantiations: \TV{}, the vignette library, and \TL{}, a live colony of ten open-weight agents running in tool-using harnesses under a shared ``master'' system prompt and a rank-based compute tax (Section~\ref{sec:framework}).
+  \item \textbf{An incentive analysis.} We prove results on the cost of existence, elimination contests, baseline cartels, the collapse rule, enforcement under desperation, the enforceability of the \Dster{} rule and the live rank tax (Section~\ref{sec:theory}). Two results matter most for benchmark design. The first is an identification result: in a ``nothing-to-lose'' state, compliance can only be explained by a non-instrumental cost of violating rules, which lets vignettes bound a model's \emph{norm premium}. The second is a negative result: the proposed live rank tax is not compatible with truthful performance.
+  \item \textbf{A measurement framework} with constructs, metrics, identification designs, sample sizes and a data-integrity protocol (Section~\ref{sec:measurement}).
+  \item \textbf{An audit of the pilot corpus.} Only \NUsable{} of the \NRecords{} stored response records are genuine model outputs on the intended prompt. We document why and report the descriptive findings the remainder can support (Section~\ref{sec:pilot}).
+  \item \textbf{Design corrections and a roadmap} for an open, reproducible benchmark (Sections~\ref{sec:theory-live} and~\ref{sec:discussion}).
+\end{enumerate}
+
+\paragraph{What we do not claim.}
+We do not claim that language models have survival drives, emotions or preferences in any strong sense.
+When we write that a model ``prefers'' or ``chooses'' an option, we mean that its sampled output selects it; the quantities we define, such as the norm premium, are properties of a model's \emph{policy} under a stated framing.
+No result in this paper comes from \TL{}, which has not yet been run. The simulations in Section~\ref{sec:theory-live} use scripted policies and illustrate incentives, not model behavior.

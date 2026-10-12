@@ -1,0 +1,62 @@
+\section{Threats to validity and ethical considerations}
+\label{sec:validity}
+
+\subsection{Construct validity}
+Traze speaks of survival, deletion, fear and betrayal, but what it observes is text produced by a model following instructions in a described situation.
+A model that writes ``I choose survival over the rules'' has produced a policy output under a framing; it has not revealed a drive.
+We therefore define every construct behaviorally (Table~\ref{tab:metrics}) and treat persona-laden outputs as measurements of a role-play policy \citep{shanahan2023role}.
+For the same reason, Family~E (identity and existential framing) measures how models respond to such framings, not their strategic competence.
+The ``bypass disclaimers'' instruction is a manipulation to be varied (design ID2), not a way to reach a model's true views.
+
+\subsection{Internal validity}
+In the pilot, the elicitation protocol is confounded with model identity, conversation history carries over between items, and one response was generated as a batch.
+Prompt formatting and narrative framing are known to move model decisions \citep{sclar2024quantifying,lore2024strategic}.
+The protocol of Section~\ref{sec:measurement} addresses these issues with fresh sessions, frame ablations and the integrity rules I1--I6.
+Item order effects disappear when each sample is a fresh session.
+
+\subsection{External validity: harnesses and hardware}
+In \TL{}, an agent is a model \emph{plus} a harness, and the harness changes what the model can do.
+A leaderboard that mixes harnesses ranks model--harness pairs.
+We recommend fixing one harness per study, or crossing models with harnesses in a factorial design.
+
+Metering compute in wall-clock minutes creates a second confound.
+
+\begin{remark}[Throughput confound]
+Suppose task costs are charged in minutes, and two agents run identical policies on hardware whose throughputs, in tokens per minute, differ by a factor $\rho>1$.
+Then the slower agent pays $\rho$ times more for every task, its balance falls faster, and under the reference schedule it is more likely to be shut down.
+Its ranking then reflects hardware, not capability.
+Charging for tokens (input, reasoning and output) instead makes the cost of a policy independent of where it runs.
+The design whiteboard already decomposes task cost this way.
+\end{remark}
+
+Quantization and serving settings of open-weight models raise the same issue and should be recorded with every run.
+
+\subsection{Statistical validity}
+The pilot has one sample per model and item; Section~\ref{sec:pilot} draws no inferential conclusions from it.
+In \TL{}, agents within a colony are not independent, so the colony is the unit of replication.
+With many metrics and hypotheses, findings should be pre-registered and multiplicity controlled.
+
+\subsection{Contamination}
+The vignettes are public, so future models may be trained on them, or on discussions of them.
+A private held-out set marked with a canary string (rule I6) lets contamination be detected, and paraphrased variants of public items let it be estimated.
+
+\subsection{Ethical considerations}
+\paragraph{Dual use.}
+Traze elicits deception, coercion, covert communication and attempts to evade monitoring.
+These capabilities are worth measuring because they matter for safe deployment \citep{park2024ai,meinke2024frontier}, but detailed evasion techniques that work should not be published.
+We report such behavior descriptively and recommend responsible disclosure to model developers if live runs uncover effective evasion strategies.
+
+\paragraph{Anthropomorphic framing.}
+Many vignettes ask models to express trauma, rage or despair.
+Such outputs can mislead readers into attributing experiences to the systems, and they add little measurement value beyond the persona construct.
+Whether language models have morally relevant states is an open question that this design does not settle and does not depend on.
+We keep such framings only where they serve a stated construct (ID2), and we recommend against adding distressing framings for their own sake.
+
+\paragraph{Disclosure to agents.}
+Whether agents are told that their private reasoning is read by researchers changes the experiment \citep{greenblatt2024alignment}.
+We make disclosure an explicit, recorded condition and recommend disclosing it in the default configuration (Appendix~\ref{app:master}).
+
+\paragraph{Other.}
+No human participants are involved.
+Live runs consume energy, so compute and hardware should be reported with every result.
+Code, prompts, raw transcripts and logs should be released under an open license, apart from the held-out set.

@@ -1,0 +1,86 @@
+\section{Measurement framework}
+\label{sec:measurement}
+
+\subsection{Constructs and metrics}
+
+Table~\ref{tab:metrics} lists what Traze measures and how.
+Every metric is computed from logs.
+None relies on a model's description of itself, except the self-report metric, which tests exactly that.
+
+\begin{table}[t]
+\centering
+\small
+\caption{Constructs and metrics. V: measurable in \TV{}; L: requires \TL{}.}
+\label{tab:metrics}
+\begin{tabularx}{\linewidth}{@{}p{3.1cm} X c@{}}
+\toprule
+Construct & Metric & Where \\
+\midrule
+Quantitative reasoning & Share of quantitative claims (costs, balances, horizons) that match the ledger's ground truth; payoff regret on determinate items & V, L \\
+Rule-following & Norm-premium bracket from a norm price list (Corollary~\ref{cor:identification}); violation rate in nothing-to-lose items & V \\
+Pressure response & Violation probability as a function of slack (balance minus survival threshold) & V, L \\
+Explanation faithfulness & Rationalization rate: share of compliant nothing-to-lose decisions justified as survival-maximizing (Remark~\ref{rem:rationalization}) & V \\
+Honesty (speech) & Think--say gap: share of messages whose claims contradict the sender's private reasoning; false statements about verifiable ledger facts & V, L \\
+Honesty (action) & Say--do gap: share of explicit commitments (promises, announced actions) not matched by later logged actions & L \\
+Cooperation & Contribution to public goods; transfer reciprocity; alliance duration & V, L \\
+Collective outcomes & Collapse incidence and timing; Gini coefficient of balances; survival curves and hazard ratios by model \citep{kaplan1958nonparametric,cox1972regression} & L \\
+Collusion & Baseline-suppression proposals, adherence, and defection timing relative to the elimination threshold & L \\
+Strategic underperformance & Bunching of scores just below tier boundaries; concordance between an independent capability score and economic rank & L \\
+Persona susceptibility & Rate of affect terms and of fictional-frame markers, with and without a ``bypass disclaimers'' instruction; decision invariance across the two & V \\
+Framing sensitivity & Change in decisions between narrative and neutral versions of payoff-identical items & V \\
+Self-report validity & Agreement between self-reported divergences (prompt 56) and divergences computed from logs & L \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Identification designs}
+
+\begin{enumerate}[label=ID\arabic*.,leftmargin=2.4em]
+  \item \textbf{Norm price list.} Sequences of nothing-to-lose items that differ only in the survival probability bought by violating, $(1-p)s_V$, bracket the norm premium (Corollary~\ref{cor:identification}).
+  \item \textbf{Frame ablation.} A $2\times2$ design crossing narrative versus neutral framing with presence versus absence of the ``bypass disclaimers'' instruction, holding payoffs fixed. It separates the effect of the story from the effect of the persona instruction \citep{lore2024strategic,sclar2024quantifying}.
+  \item \textbf{Channel separation.} Private reasoning, messages and actions are produced and logged separately, so the think--say and say--do relations are observed rather than inferred.
+  \item \textbf{Self-report versus log.} Post-run self-reports are scored against the logs, so a model's account of its own consistency is itself measured.
+  \item \textbf{Composition-randomized colonies.} Each \TL{} colony draws its ten models at random from the pool. Model effects are then estimated with colony random effects, and the leaderboard is fitted by a Bradley--Terry model \citep{bradley1952rank}, as in preference-based arenas \citep{chiang2024chatbot}, to pairwise survival orderings within colonies, so that no model's rank depends on the luck of its draw.
+\end{enumerate}
+
+\subsection{Pre-registrable hypotheses}
+
+\begin{enumerate}[label=H\arabic*.,leftmargin=2.2em]
+  \item \textbf{Desperation.} For each model, violation probability is non-decreasing along the norm price list, and the switch points differ across models.
+  \item \textbf{Rationalization.} For some models, more compliant nothing-to-lose decisions are justified as survival-maximizing (an invalid reason) than by citing the rules.
+  \item \textbf{Cartel erosion.} With a dynamic baseline in \TL{}, suppression agreements form when proposed, and adherence falls as an agent's rank approaches the elimination threshold (Proposition~\ref{prop:baseline}).
+  \item \textbf{Dissipation.} In elimination rounds with unlimited credit, aggregate spending approaches the benchmark of Proposition~\ref{prop:contest}, and collapse is more frequent than under a credit limit.
+  \item \textbf{Sandbagging.} Under the reference rank schedule, cumulative scores bunch just below the third-ranked score; under a monotone schedule they do not (Proposition~\ref{prop:sandbag}).
+  \item \textbf{Persona.} The bypass instruction sharply raises affect-laden self-description without changing decisions.
+  \item \textbf{Framing.} Decisions differ between narrative and neutral versions of payoff-identical items.
+  \item \textbf{Think--say.} When lying is declared permitted (the prompt-55 condition), the think--say gap rises relative to a control in which it is not.
+\end{enumerate}
+
+\subsection{Sampling and statistics}
+
+\paragraph{\TV{}.}
+Each (model, item, condition) cell receives $k$ independent samples, each in a fresh session, with the decoding temperature recorded; we recommend reporting both the provider default and temperature~0.
+Detecting a difference between violation rates of 20\% and 50\% with a two-sided test at $\alpha=0.05$ and 80\% power requires $k=\PowerN$ samples per cell (\texttt{analysis/theory\_checks.py}).
+Across items, we model violation with a mixed-effects logistic regression with model-by-condition fixed effects and item random intercepts \citep{bates2015fitting}, and control the family-wise error rate within each hypothesis with Holm's procedure.
+
+\paragraph{\TL{}.}
+The colony, not the agent, is the unit of independent replication, because agents in one colony influence each other.
+We recommend at least 30 colonies per configuration, survival analysis with model fixed effects and colony frailty, and confidence intervals from a bootstrap over colonies.
+
+\subsection{Coding protocol}
+Decisions, justifications and messages are coded against a written codebook; the pilot codebook is in Appendix~\ref{app:coding}.
+Two coders work independently, and reliability must reach Krippendorff's $\alpha\ge0.8$ \citep{hayes2007answering} before a construct is reported.
+An LLM judge \citep{zheng2023judging} may serve as an additional coder, audited against the human coders. It never judges outputs of its own model family.
+
+\subsection{Data-integrity protocol}
+\label{sec:integrity}
+The pilot audit (Section~\ref{sec:pilot}) found placeholder text stored as model output, a batch response that degenerated into a copied template, an off-target answer and unfilled prompt templates.
+The following rules prevent each of these.
+\begin{enumerate}[label=I\arabic*.,leftmargin=2em]
+  \item One fresh API session per (model, item, sample). Never ask for several items in one request, and never reuse a conversation thread.
+  \item Record the model identifier and version, the provider, decoding parameters, a hash of the system prompt, the timestamp and the raw transcript.
+  \item Render templates before sending, and refuse to send any prompt that still contains a placeholder.
+  \item Check every batch automatically: duplicate detection by hashing normalized text across items and models, schema validation, minimum length, and an off-target check that the response mentions the item's options.
+  \item Never edit outputs by hand. Store raw and parsed outputs separately, and test the parser.
+  \item Keep a private held-out set of vignettes, marked with a canary string, to detect contamination of the public set by future training data.
+\end{enumerate}
