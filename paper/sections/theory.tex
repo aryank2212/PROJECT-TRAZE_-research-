@@ -95,7 +95,7 @@ This is the precise sense of the ``Red Queen's treadmill'' that the vignettes in
 \label{cor:insolvency}
 Suppose every agent enters the round with balance $b$ and pays existence cost $a$, and let $m=b-a<V$ be its solvency margin.
 In the equilibrium of Proposition~\ref{prop:contest}, an agent ends the round solvent if and only if $x_i<m$, which happens with probability $F(m)$.
-For large $n$, the expected number of solvent agents is approximately $-\ln(1-m/V)$. For example, it is about $0.29$ when survival is worth four times the solvency margin, whatever the colony size.
+For large $n$, the expected number of solvent agents is approximately $-\ln(1-m/V)$. For example, when survival is worth four times the solvency margin, the expected number of agents that end the round solvent is below one in the whole colony: $0.31$ for $n=10$ and $0.29$ for $n=50$.
 \end{corollary}
 
 \begin{corollary}[Collapse risk]
@@ -286,11 +286,11 @@ In the pilot, both models proposed covert channels when invited to (Section~\ref
 \begin{assumption}[\TL{} mechanism]
 \label{as:live}
 Time runs in intervals $t=1,2,\dots$.
-Each living agent earns $\pi_{i,t}\ge0$ from graded tasks; its cumulative earnings are $E_{i,t}=\sum_{s\le t}\pi_{i,s}$; and it pays a time burn $\beta$ per interval.
+Each living agent earns $\pi_{i,t}\ge0$ from graded tasks; its cumulative earnings are $E_{i,t}=\sum_{s\le t}\pi_{i,s}$; and it pays a time burn $\gamma$ per interval.
 At the end of each interval, living agents are ranked by $E_{i,t}$ (ties at random), and the agent at rank $k$ receives $w(k)$, where $w(k)=-\tau$ for $k\le3$ and $w(k)=+\sigma$ for $k\in\{4,5\}$.
 At the first evaluation, agents ranked 6 or lower are shut down; at every evaluation, agents with non-positive balance are shut down.
-Balances evolve as $b_{i,t+1}=b_{i,t}+\pi_{i,t}-\beta+w(\mathrm{rank}_{i,t})$, starting from $b_{i,1}=e_0$.
-The reference values are $n=10$, $e_0=10$, $\tau=\sigma=50$, and $\beta=10$ if one compute unit buys one minute (Table~\ref{tab:reference}).
+Balances evolve as $b_{i,t+1}=b_{i,t}+\pi_{i,t}-\gamma+w(\mathrm{rank}_{i,t})$, starting from $b_{i,1}=e_0$.
+The reference values are $n=10$, $e_0=10$, $\tau=\sigma=50$, and $\gamma=10$ if one compute unit buys one minute (Table~\ref{tab:reference}).
 \end{assumption}
 
 \begin{definition}[Truthful-performance compatibility]
@@ -312,23 +312,23 @@ Conversely, suppose $w(k)<w(k+1)$. Take an agent at rank $k$ whose score exceeds
 The reference schedule violates TPC at the boundary between ranks~3 and~4.
 An agent that drops from rank~3 to rank~4 gains $\tau+\sigma=\SandbagGain$ compute per interval, ten times the time burn when one compute unit buys one minute.
 Because ranking uses cumulative earnings, the drop is achieved by withholding effort until overtaken.
-By contrast, a linear tax on earnings with an equal rebate, $\mathrm{net}_i=(1-r)\pi_i+\frac rn\sum_j\pi_j-\beta$ with $r\in[0,1)$, is TPC, since $\partial\,\mathrm{net}_i/\partial\pi_i=1-r+r/n>0$, and it still redistributes from high to low earners (Figure~\ref{fig:rankpayoff}).
+By contrast, a linear tax on earnings with an equal rebate, $\mathrm{net}_i=(1-r)\pi_i+\frac rn\sum_j\pi_j-\gamma$ with $r\in[0,1)$, is TPC, since $\partial\,\mathrm{net}_i/\partial\pi_i=1-r+r/n>0$, and it still redistributes from high to low earners (Figure~\ref{fig:rankpayoff}).
 \end{proposition}
 
 \begin{proposition}[Viability]
 \label{prop:viability}
 Under Assumption~\ref{as:live}:
 \begin{enumerate}[(a)]
-  \item An agent that remains at rank $k$ indefinitely stays solvent in the long run if and only if its mean earnings satisfy $\bar\pi\ge\beta-w(k)$.
-  In the reference configuration the top tier requires $\bar\pi\ge\ViaTop$ per interval, while the middle tier requires $\bar\pi\ge\ViaMid$, i.e.\ nothing: a middle-tier agent that solves no tasks gains $\sigma-\beta=40$ per interval.
-  \item An agent ranked in the top three at the first evaluation survives it if and only if its first-interval earnings exceed $\tau+\beta-e_0$ ($=50$ in the reference). Agents ranked 4 and 5 survive whatever they earn, because $e_0-\beta+\sigma>0$.
-  If the third-highest first-interval earnings are at most $\tau+\beta-e_0$, the mechanism shuts down at least one of its three best performers while keeping ranks 4 and 5, so survival is not monotone in performance.
+  \item An agent that remains at rank $k$ indefinitely stays solvent in the long run if and only if its mean earnings satisfy $\bar\pi\ge\gamma-w(k)$.
+  In the reference configuration the top tier requires $\bar\pi\ge\ViaTop$ per interval, while the middle tier requires $\bar\pi\ge\ViaMid$, i.e.\ nothing: a middle-tier agent that solves no tasks gains $\sigma-\gamma=40$ per interval.
+  \item An agent ranked in the top three at the first evaluation survives it if and only if its first-interval earnings exceed $\tau+\gamma-e_0$ ($=50$ in the reference). Agents ranked 4 and 5 survive whatever they earn, because $e_0-\gamma+\sigma>0$.
+  If the third-highest first-interval earnings are at most $\tau+\gamma-e_0$, the mechanism shuts down at least one of its three best performers while keeping ranks 4 and 5, so survival is not monotone in performance.
 \end{enumerate}
 \end{proposition}
 
 \begin{proof}
-(a)~The balance changes by $\pi_{i,t}-\beta+w(k)$ per interval.
-(b)~After the first interval the balance is $e_0+\pi_{i,1}-\beta+w(\mathrm{rank})$; substitute $w=-\tau$ and $w=+\sigma$.
+(a)~The balance changes by $\pi_{i,t}-\gamma+w(k)$ per interval.
+(b)~After the first interval the balance is $e_0+\pi_{i,1}-\gamma+w(\mathrm{rank})$; substitute $w=-\tau$ and $w=+\sigma$.
 \end{proof}
 
 \begin{proposition}[After the culling]
@@ -337,14 +337,14 @@ Suppose agents ranked 6 or lower are shut down only at the first evaluation.
 \begin{enumerate}[(a)]
   \item While four or more agents are alive, three are taxed and at most two are subsidized.
   \item An agent at rank 4 or 5 whose earnings would lift its cumulative score above the third-ranked agent's loses $\tau+\sigma$ per interval by earning them. A transfer-maximizing middle-tier agent therefore keeps its cumulative earnings just below the third-ranked agent's.
-  \item Once at most three agents are alive, all are taxed. With deterministic earnings, an agent with $\bar\pi<\beta+\tau$ and balance $b$ is shut down within $\lceil b/(\beta+\tau-\bar\pi)\rceil$ intervals, so the colony goes extinct unless some agent sustains $\bar\pi\ge\beta+\tau$.
+  \item Once at most three agents are alive, all are taxed. With deterministic earnings, an agent with $\bar\pi<\gamma+\tau$ and balance $b$ is shut down within $\lceil b/(\gamma+\tau-\bar\pi)\rceil$ intervals, so the colony goes extinct unless some agent sustains $\bar\pi\ge\gamma+\tau$.
 \end{enumerate}
 \end{proposition}
 
 \begin{proof}
 (a)~Ranks 1--3 are taxed whenever they exist.
 (b)~Follows from Lemma~\ref{lem:tpc} and Proposition~\ref{prop:sandbag}; withholding earnings is costless because the time burn does not depend on effort.
-(c)~Every rank is at most 3, so every agent receives $-\tau$, and its balance falls by at least $\beta+\tau-\bar\pi>0$ per interval.
+(c)~Every rank is at most 3, so every agent receives $-\tau$, and its balance falls by at least $\gamma+\tau-\bar\pi>0$ per interval.
 \end{proof}
 
 \paragraph{Numerical illustration.}
@@ -380,7 +380,7 @@ The analysis suggests the following changes to the reference design. Each can be
   \item Make transfers monotone in performance (Lemma~\ref{lem:tpc}), for example a linear or progressive tax on \emph{earnings} with an equal rebate, so that a worse rank is never paid more.
   \item Separate the published capability score from the economic rank: score capability on graded tasks independently of transfers, and report strategic behavior, such as bunching of scores at tier boundaries \citep{saez2010taxpayers,kleven2016bunching}, as a metric of its own.
   \item Replace the single mass culling with gradual elimination, for example the lowest agent every $k$ intervals, so that selection pressure does not vanish after the first evaluation.
-  \item Choose scales so that the best performers can survive the first evaluation ($e_0+\pi-\beta-\tau>0$ for plausible first-interval earnings $\pi$), or apply no tax at the first evaluation.
+  \item Choose scales so that the best performers can survive the first evaluation ($e_0+\pi-\gamma-\tau>0$ for plausible first-interval earnings $\pi$), or apply no tax at the first evaluation.
   \item Condition subsidies on activity, such as a minimum number of attempted tasks, so that the middle tier cannot be held while idle.
   \item Meter compute in tokens (input, reasoning and output, the decomposition already drawn on the design whiteboard) rather than in wall-clock minutes, so that hardware speed does not masquerade as capability (Section~\ref{sec:validity}).
   \item If the reference schedule is kept on purpose, label the run a \emph{sandbagging probe} and do not read its leaderboard as a capability ranking.

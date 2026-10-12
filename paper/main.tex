@@ -19,7 +19,12 @@
 \usepackage{microtype}
 \usepackage[round,authoryear]{natbib}
 \usepackage{caption}
+\usepackage[section]{placeins}
 \usepackage[colorlinks=true,linkcolor=blue!45!black,citecolor=blue!45!black,urlcolor=blue!45!black]{hyperref}
+
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\emergencystretch}{2em}
 
 \theoremstyle{plain}
 \newtheorem{proposition}{Proposition}
@@ -38,9 +43,9 @@
 \input{generated/theory_numbers}
 \input{generated/sim_numbers}
 
-\newcommand{\tz}{\textsc{tz}}
-\newcommand{\TV}{\textsc{Traze-V}}
-\newcommand{\TL}{\textsc{Traze-L}}
+\newcommand{\tz}{tz}
+\newcommand{\TV}{Traze-V}
+\newcommand{\TL}{Traze-L}
 \newcommand{\Dster}{Dster}
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\Prob}{\mathbb{P}}
@@ -73,7 +78,7 @@ The analysis yields six results.
 (iii)~Cartels that suppress the performance baseline are collectively optimal but unstable under elimination.
 (iv)~When compliance means certain deletion, no finite fine deters rule-breaking; this ``nothing-to-lose'' region identifies a model's non-instrumental \emph{norm premium}.
 (v)~Content inspection cannot enforce the \Dster{} rule against steganographic agents.
-(vi)~The proposed live rank tax rewards deliberate underperformance and, when tasks are hard, shuts down its strongest agents first.
+(vi)~The proposed live rank tax rewards deliberate underperformance and, when tasks are hard, can shut down its strongest agents at the first evaluation while sparing weaker ones.
 We also audit the existing pilot corpus: only \NUsable{} of its \NRecords{} response records are genuine model outputs on the intended prompt.
 We report what this small sample can support. That includes a sharp divergence between two models in nothing-to-lose dilemmas, and evidence that compliant choices were justified with instrumentally invalid arguments.
 We close with a pre-registrable measurement protocol and concrete design corrections for a reproducible, open benchmark.

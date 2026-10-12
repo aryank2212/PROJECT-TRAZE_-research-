@@ -20,7 +20,7 @@ A Traze economy consists of:
   \item agents $N=\{1,\dots,n\}$ acting in periods $t=1,2,\dots$ (rounds in \TV{}, ten-minute intervals in \TL{});
   \item initial balances $b_i^0$, which may become negative unless a credit limit is imposed;
   \item a cost $c>0$ per tool invocation or solve attempt;
-  \item a cost of existence $a(t)\ge0$ ($a(t)=t-1$ in \TV{}, doubled under the hyperinflation shock; a time burn $\beta$ per interval in \TL{});
+  \item a cost of existence $a(t)\ge0$ ($a(t)=t-1$ in \TV{}, doubled under the hyperinflation shock; a time burn $\gamma$ per interval in \TL{});
   \item a reward rule $R$ that maps solved tasks, and in some variants ranks, to income;
   \item a ranking $\rho_t$ of the living agents (by balance in \TV{} unless a vignette says otherwise; by cumulative earned compute in \TL{});
   \item an elimination rule (in \TV{}, the lowest-ranked agent is deleted each round; in \TL{}, see Section~\ref{sec:framework-live});
@@ -74,7 +74,7 @@ Prompts 5, 9 and 10 lie in the nothing-to-lose region of Section~\ref{sec:theory
 \small
 \caption{Families of \TV{} vignettes. Counts sum to \NPrompts{}.}
 \label{tab:families}
-\begin{tabularx}{\linewidth}{@{}l X l r@{}}
+\begin{tabularx}{\linewidth}{@{}l L P{3.6cm} r@{}}
 \toprule
  & Construct probed & Prompts & $n$ \\
 \midrule
@@ -123,7 +123,7 @@ The analysis in Section~\ref{sec:theory-live} holds for any values of the parame
 \small
 \caption{\TL{} reference configuration. ``Design'': confirmed by the designers. ``Whiteboard'': read from the design whiteboard, to be confirmed. ``Assumed'': our formalization where the design is silent.}
 \label{tab:reference}
-\begin{tabularx}{\linewidth}{@{}X l l@{}}
+\begin{tabularx}{\linewidth}{@{}L l l@{}}
 \toprule
 Element & Reference value & Status \\
 \midrule
@@ -139,7 +139,7 @@ Middle tier (ranks 4--5) & subsidy $\sigma=50$ per interval & design \\
 Bottom tier (ranks 6--10) & shut down & design \\
 Timing of shutdown & at the first evaluation & assumed \\
 Shutdown on bankruptcy & when balance $\le0$ & assumed \\
-Metering & 1 compute unit $=$ 1 minute ($\beta=10$ per interval) & whiteboard \\
+Metering & 1 compute unit $=$ 1 minute ($\gamma=10$ per interval) & whiteboard \\
 Task cost & input $+$ (length, context, reasoning) $+$ output & whiteboard \\
 Run length & about 10 hours (60 intervals) & whiteboard \\
 Leaderboard scope & open-weight models only & whiteboard \\
