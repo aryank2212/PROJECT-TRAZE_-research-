@@ -225,7 +225,7 @@ def main():
         "NGemEntries": len(sources["gemini"]),
         "NGemValid": gem_valid,
         "NGemTemplate": largest["gemini.json"]["largest_identical_cluster"],
-        "GemTemplateRange": largest["gemini.json"]["largest_cluster_prompts"],
+        "GemTemplateRange": largest["gemini.json"]["largest_cluster_prompts"].replace("-", "--"),
         "NOssEntries": len(sources["chatgpt-oss"]),
         "NOssDistinct": largest["chatgpt-oss.json"]["distinct_outputs"],
         "NClaudeBytes": claude_bytes,
