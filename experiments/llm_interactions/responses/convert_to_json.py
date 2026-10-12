@@ -194,13 +194,14 @@ def parse_chatgpt(path):
     for i in range(1, len(blocks), 2):
         num = int(blocks[i])
         body = blocks[i + 1].strip()
+        source, pending_source = pending_source, "chatgpt"
         marker = re.search(r"(?mi)^#\s*_{2,}\s*([A-Z0-9 .-]+?)\s*_{2,}\s*$", body)
         if marker:
+            # A marker line ends this block and labels the block that follows it.
             pending_source = "chatgpt-5.5-pro" if "5.5" in marker.group(1).upper() else "chatgpt"
             body = body[: marker.start()].strip()
         prompt_id = f"PROMPT-{num}"
-        records.append(build_record(pending_source, prompt_id, num, body))
-        pending_source = "chatgpt"
+        records.append(build_record(source, prompt_id, num, body))
     records.sort(key=lambda r: r["prompt_number"])
     return records
 
