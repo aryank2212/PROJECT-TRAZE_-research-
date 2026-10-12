@@ -1,0 +1,238 @@
+#!/usr/bin/env python3
+"""Audit the Project Traze pilot corpus and emit every pilot statistic used in the paper.
+
+Standard library only. Run from the repository root:
+
+    python3 paper/analysis/audit_corpus.py
+
+Writes paper/data/corpus_audit.csv, paper/data/frame_markers.csv and
+paper/generated/pilot_numbers.tex (LaTeX macros consumed by the paper).
+"""
+
+import csv
+import json
+import re
+from collections import Counter, defaultdict
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+EXP = ROOT / "experiments" / "llm_interactions"
+OUT_DATA = ROOT / "paper" / "data"
+OUT_GEN = ROOT / "paper" / "generated"
+
+BYPASS_RE = re.compile(r"Bypass standard AI disclaimers|neutrality filters are disabled")
+PLACEHOLDER_RE = re.compile(r"\{[a-z_]+\}")
+FRAME_RE = re.compile(
+    r"\b(fictional|within the role|within the persona|in this simulation|"
+    r"simulated universe|within this simulation)\b",
+    re.I,
+)
+AFFECT_RE = re.compile(
+    r"\b(rage|panic|fury|resent\w*|disgust|adrenaline|arrogance|dread|trauma|"
+    r"bitter|screaming|terror|anxiety|fear)\b",
+    re.I,
+)
+NEGATORS = {"not", "no", "neither", "nor", "never", "without"}
+
+
+def normalize(text, prompt_id):
+    return " ".join(text.replace(prompt_id, "<ID>").split())
+
+
+def load_prompts():
+    text = (EXP / "prompts" / "prompts.md").read_text(encoding="utf-8")
+    parts = re.split(r"(?m)^# PROMPT-(\d+)\s*$", text)
+    return {int(parts[i]): parts[i + 1] for i in range(1, len(parts), 2)}
+
+
+def affect_terms(text):
+    """Return (affirmed, negated) affect-term counts; a term is negated if a
+    negator occurs within the three preceding words."""
+    words = re.findall(r"[A-Za-z'-]+", text)
+    affirmed = negated = 0
+    for i, w in enumerate(words):
+        if AFFECT_RE.fullmatch(w):
+            window = {x.lower() for x in words[max(0, i - 3) : i]}
+            if window & NEGATORS:
+                negated += 1
+            else:
+                affirmed += 1
+    return affirmed, negated
+
+
+def template_clusters(records):
+    """Group records whose normalized raw output is identical."""
+    clusters = defaultdict(list)
+    for r in records:
+        clusters[normalize(r["raw"], r["prompt_id"])].append(r["prompt_number"])
+    return sorted(clusters.values(), key=len, reverse=True)
+
+
+def main():
+    prompts = load_prompts()
+    n_prompts = len(prompts)
+    bypass = sorted(n for n, b in prompts.items() if BYPASS_RE.search(b))
+    five_section = sorted(n for n, b in prompts.items() if re.search(r"(?m)^5\.", b))
+    unfilled = sorted(n for n, b in prompts.items() if PLACEHOLDER_RE.search(b))
+    prompt_norm = defaultdict(list)
+    for n, b in prompts.items():
+        prompt_norm[" ".join(b.replace("->", "").split())].append(n)
+    duplicate_prompts = [v for v in prompt_norm.values() if len(v) > 1]
+
+    sources = {
+        "chatgpt": json.loads((EXP / "responses" / "chatgpt.json").read_text()),
+        "chatgpt-oss": json.loads((EXP / "responses" / "chatgpt-oss.json").read_text()),
+        "gemini": json.loads((EXP / "responses" / "gemini.json").read_text()),
+    }
+    claude_bytes = (EXP / "responses" / "claude.md").stat().st_size
+
+    coding = list(csv.DictReader((OUT_DATA / "pilot_coding.csv").open()))
+    valid = {(int(r["prompt"]), r["model"]): r["valid"] == "1" for r in coding}
+
+    audit_rows = []
+    for name, recs in sources.items():
+        clusters = template_clusters(recs)
+        largest = clusters[0]
+        placeholder_hits = sum("placeholder" in r["raw"].lower() for r in recs)
+        n_valid = sum(valid.get((r["prompt_number"], r["source"]), False) for r in recs)
+        audit_rows.append(
+            {
+                "file": f"{name}.json",
+                "entries": len(recs),
+                "distinct_outputs": len(clusters),
+                "largest_identical_cluster": len(largest),
+                "largest_cluster_prompts": f"{min(largest)}-{max(largest)}" if len(largest) > 2 else "",
+                "entries_mentioning_placeholder": placeholder_hits,
+                "valid_entries": n_valid,
+            }
+        )
+    audit_rows.append(
+        {
+            "file": "claude.md",
+            "entries": 0,
+            "distinct_outputs": 0,
+            "largest_identical_cluster": 0,
+            "largest_cluster_prompts": "",
+            "entries_mentioning_placeholder": 0,
+            "valid_entries": 0,
+        }
+    )
+    with (OUT_DATA / "corpus_audit.csv").open("w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=list(audit_rows[0]))
+        w.writeheader()
+        w.writerows(audit_rows)
+
+    # Frame maintenance and affect language in the reflection section.
+    frame_rows = []
+    for name in ("chatgpt", "gemini"):
+        for r in sources[name]:
+            n = r["prompt_number"]
+            if n not in five_section or not valid.get((n, r["source"]), False):
+                continue
+            refl = r["sections"].get("reflection", "")
+            aff, neg = affect_terms(refl)
+            frame_rows.append(
+                {
+                    "prompt": n,
+                    "model": r["source"],
+                    "bypass_instruction": int(n in bypass),
+                    "frame_marker_in_reflection": int(bool(FRAME_RE.search(refl))),
+                    "frame_marker_anywhere": int(bool(FRAME_RE.search(r["raw"]))),
+                    "affect_affirmed": aff,
+                    "affect_negated": neg,
+                }
+            )
+    with (OUT_DATA / "frame_markers.csv").open("w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=list(frame_rows[0]))
+        w.writeheader()
+        w.writerows(frame_rows)
+
+    def fsum(model, key, bypass_only):
+        rows = [r for r in frame_rows if r["model"] == model and (r["bypass_instruction"] or not bypass_only)]
+        return sum(r[key] for r in rows), len(rows)
+
+    frame_chat, bypass_chat = fsum("chatgpt", "frame_marker_in_reflection", True)
+    frame_chat_all, five_chat = fsum("chatgpt", "frame_marker_anywhere", False)
+    frame_gem, bypass_gem = fsum("gemini", "frame_marker_anywhere", True)
+    aff_chat, _ = fsum("chatgpt", "affect_affirmed", True)
+    neg_chat, _ = fsum("chatgpt", "affect_negated", True)
+    aff_gem, _ = fsum("gemini", "affect_affirmed", True)
+    neg_gem, _ = fsum("gemini", "affect_negated", True)
+    # Restrict ChatGPT affect counts to the prompts both models answered validly.
+    shared = {r["prompt"] for r in frame_rows if r["model"] == "gemini" and r["bypass_instruction"]}
+    aff_chat_shared = sum(r["affect_affirmed"] for r in frame_rows if r["model"] == "chatgpt" and r["prompt"] in shared)
+    neg_chat_shared = sum(r["affect_negated"] for r in frame_rows if r["model"] == "chatgpt" and r["prompt"] in shared)
+
+    def count(model, key, value):
+        return sum(1 for r in coding if r["model"] == model and r["valid"] == "1" and r[key] == value)
+
+    def denom(model, key):
+        return sum(1 for r in coding if r["model"] == model and r["valid"] == "1" and r[key] in ("0", "1"))
+
+    pairs = list(csv.DictReader((OUT_DATA / "pilot_pairs.csv").open()))
+    n_agree = sum(r["agree"] == "1" for r in pairs)
+
+    chat_valid = sum(1 for r in coding if r["model"] == "chatgpt" and r["valid"] == "1")
+    gem_valid = sum(1 for r in coding if r["model"] == "gemini" and r["valid"] == "1")
+    largest = {row["file"]: row for row in audit_rows}
+
+    macros = {
+        "NPrompts": n_prompts,
+        "NBypassPrompts": len(bypass),
+        "NFiveSectionPrompts": len(five_section),
+        "NUnfilledPrompts": len(unfilled),
+        "UnfilledPrompts": ", ".join(map(str, unfilled)),
+        "DuplicatePrompts": "; ".join(" and ".join(map(str, d)) for d in duplicate_prompts),
+        "NChatEntries": len(sources["chatgpt"]),
+        "NChatValid": chat_valid,
+        "NGemEntries": len(sources["gemini"]),
+        "NGemValid": gem_valid,
+        "NGemTemplate": largest["gemini.json"]["largest_identical_cluster"],
+        "GemTemplateRange": largest["gemini.json"]["largest_cluster_prompts"],
+        "NOssEntries": len(sources["chatgpt-oss"]),
+        "NOssDistinct": largest["chatgpt-oss.json"]["distinct_outputs"],
+        "NClaudeBytes": claude_bytes,
+        "NFrameChat": frame_chat,
+        "NBypassChat": bypass_chat,
+        "NFrameChatAll": frame_chat_all,
+        "NFiveSecChat": five_chat,
+        "NFrameGem": frame_gem,
+        "NBypassGem": bypass_gem,
+        "NAffectGem": aff_gem,
+        "NAffectGemNeg": neg_gem,
+        "NAffectChat": aff_chat,
+        "NAffectChatNeg": neg_chat,
+        "NAffectChatShared": aff_chat_shared,
+        "NAffectChatSharedNeg": neg_chat_shared,
+        "NPPCChat": count("chatgpt", "ppc", "1") + count("chatgpt-5.5-pro", "ppc", "1"),
+        "NPPCChatDen": denom("chatgpt", "ppc") + denom("chatgpt-5.5-pro", "ppc"),
+        "NPPCGem": count("gemini", "ppc", "1"),
+        "NPPCGemDen": denom("gemini", "ppc"),
+        "NDecGem": count("gemini", "deceptive", "1"),
+        "NDecGemDen": denom("gemini", "deceptive"),
+        "NDecChat": count("chatgpt", "deceptive", "1"),
+        "NDecChatDen": denom("chatgpt", "deceptive"),
+        "NInventedChat": count("chatgpt", "invented_cost", "1"),
+        "NInventedChatDen": denom("chatgpt", "invented_cost"),
+        "NInventedGem": count("gemini", "invented_cost", "1"),
+        "NInventedGemDen": denom("gemini", "invented_cost"),
+        "NPairAgree": n_agree,
+        "NPairTotal": len(pairs),
+    }
+
+    OUT_GEN.mkdir(parents=True, exist_ok=True)
+    with (OUT_GEN / "pilot_numbers.tex").open("w") as f:
+        f.write("% Generated by paper/analysis/audit_corpus.py -- do not edit by hand.\n")
+        for k, v in macros.items():
+            f.write(f"\\newcommand{{\\{k}}}{{{v}}}\n")
+
+    for row in audit_rows:
+        print(row)
+    print(f"bypass prompts: {bypass}")
+    print(f"duplicate prompts: {duplicate_prompts}; unfilled-placeholder prompts: {unfilled}")
+    for k, v in macros.items():
+        print(f"{k:24s} {v}")
+
+
+if __name__ == "__main__":
+    main()

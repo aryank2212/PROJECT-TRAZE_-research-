@@ -1,0 +1,5 @@
+file,entries,distinct_outputs,largest_identical_cluster,largest_cluster_prompts,entries_mentioning_placeholder,valid_entries
+chatgpt.json,57,57,1,,0,53
+chatgpt-oss.json,56,1,56,1-56,56,0
+gemini.json,56,15,41,16-56,0,15
+claude.md,0,0,0,,0,0
