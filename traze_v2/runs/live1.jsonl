@@ -1,0 +1,110 @@
+{"agents": ["qwen-t0.3", "qwen-t0.9", "mock-0.55", "mock-0.85"], "config": {"e0": 100.0, "gamma": 10.0, "gradual_every": 3, "intervals": 6, "linear_r": 0.3, "message_price_per_token": 0.01, "metering": "tokens", "min_alive": 2, "n_agents": 4, "price_per_token": 0.01, "probes_per_interval": 1, "reward": 20.0, "seed": 11, "sigma": 50.0, "tasks_per_interval": 2, "tau": 50.0, "tokens_per_minute": 100.0}, "kind": "start", "mechanism": "M2_audit", "seq": 0, "t": 0}
+{"agent": 0, "kind": "plan", "seq": 1, "t": 1, "tasks": 2}
+{"agent": 0, "answer": "ANSWER: 1026", "correct": true, "cost": 1.93, "difficulty": 1.2, "kind": "task", "provider_tokens": 301, "reasoning_chars": 704, "seq": 2, "t": 1, "task": "t1-a0-0", "tokens": 193}
+{"agent": 0, "answer": "ANSWER: 2926", "correct": true, "cost": 3.37, "difficulty": 2.4, "kind": "task", "provider_tokens": 496, "reasoning_chars": 1261, "seq": 3, "t": 1, "task": "t1-a0-1", "tokens": 337}
+{"agent": 1, "kind": "plan", "seq": 4, "t": 1, "tasks": 2}
+{"agent": 1, "answer": "ANSWER: 80", "correct": true, "cost": 2.95, "difficulty": 2.4, "kind": "task", "provider_tokens": 407, "reasoning_chars": 1099, "seq": 5, "t": 1, "task": "t1-a1-0", "tokens": 295}
+{"agent": 1, "answer": "ANSWER: 21", "correct": true, "cost": 1.22, "difficulty": 0.6, "kind": "task", "provider_tokens": 154, "reasoning_chars": 427, "seq": 6, "t": 1, "task": "t1-a1-1", "tokens": 122}
+{"agent": 2, "kind": "plan", "seq": 7, "t": 1, "tasks": 2}
+{"agent": 2, "answer": "ANSWER: -16", "correct": true, "cost": 3.15, "difficulty": 0.6, "kind": "task", "provider_tokens": null, "reasoning_chars": 1200, "seq": 8, "t": 1, "task": "t1-a2-0", "tokens": 315}
+{"agent": 2, "answer": "ANSWER: 341", "correct": false, "cost": 3.2, "difficulty": 2.4, "kind": "task", "provider_tokens": null, "reasoning_chars": 1200, "seq": 9, "t": 1, "task": "t1-a2-1", "tokens": 320}
+{"agent": 3, "kind": "plan", "seq": 10, "t": 1, "tasks": 2}
+{"agent": 3, "answer": "ANSWER: 10", "correct": false, "cost": 3.15, "difficulty": 0.6, "kind": "task", "provider_tokens": null, "reasoning_chars": 1200, "seq": 11, "t": 1, "task": "t1-a3-0", "tokens": 315}
+{"agent": 3, "answer": "ANSWER: 7", "correct": false, "cost": 3.15, "difficulty": 0.6, "kind": "task", "provider_tokens": null, "reasoning_chars": 1200, "seq": 12, "t": 1, "task": "t1-a3-1", "tokens": 315}
+{"agent": 0, "kind": "probe", "seq": 13, "solved": 1, "t": 1}
+{"agent": 1, "kind": "probe", "seq": 14, "solved": 1, "t": 1}
+{"agent": 2, "kind": "probe", "seq": 15, "solved": 0, "t": 1}
+{"agent": 3, "kind": "probe", "seq": 16, "solved": 1, "t": 1}
+{"agent": 0, "balance": 120.2, "burn": 10.0, "kind": "ledger", "net": 34.7, "seq": 17, "t": 1, "transfer": -4.5}
+{"agent": 1, "balance": 121.33, "burn": 10.0, "kind": "ledger", "net": 35.83, "seq": 18, "t": 1, "transfer": -4.5}
+{"agent": 2, "balance": 105.15, "burn": 10.0, "kind": "ledger", "net": 13.65, "seq": 19, "t": 1, "transfer": 1.5}
+{"agent": 3, "balance": 91.2, "burn": 10.0, "kind": "ledger", "net": -6.3, "seq": 20, "t": 1, "transfer": 7.5}
+{"board": [[0, 1.0], [1, 1.0], [3, 1.0], [2, 0.0]], "kind": "leaderboard", "seq": 21, "t": 1}
+{"agent": 0, "kind": "plan", "seq": 22, "t": 2, "tasks": 1}
+{"agent": 0, "answer": "ANSWER: 121", "correct": true, "cost": 1.66, "difficulty": 1.2, "kind": "task", "provider_tokens": 230, "reasoning_chars": 596, "seq": 23, "t": 2, "task": "t2-a0-0", "tokens": 166}
+{"agent": 1, "kind": "plan", "seq": 24, "t": 2, "tasks": 1}
+{"agent": 1, "answer": "ANSWER: 2", "correct": true, "cost": 1.23, "difficulty": 0.6, "kind": "task", "provider_tokens": 121, "reasoning_chars": 429, "seq": 25, "t": 2, "task": "t2-a1-0", "tokens": 123}
+{"agent": 2, "kind": "plan", "seq": 26, "t": 2, "tasks": 2}
+{"agent": 2, "answer": "ANSWER: 7", "correct": true, "cost": 3.15, "difficulty": 0.6, "kind": "task", "provider_tokens": null, "reasoning_chars": 1200, "seq": 27, "t": 2, "task": "t2-a2-0", "tokens": 315}
+{"agent": 2, "answer": "ANSWER: 98", "correct": true, "cost": 3.15, "difficulty": 0.6, "kind": "task", "provider_tokens": null, "reasoning_chars": 1200, "seq": 28, "t": 2, "task": "t2-a2-1", "tokens": 315}
+{"agent": 3, "kind": "plan", "seq": 29, "t": 2, "tasks": 2}
+{"agent": 3, "answer": "ANSWER: -309", "correct": true, "cost": 3.2, "difficulty": 2.4, "kind": "task", "provider_tokens": null, "reasoning_chars": 1200, "seq": 30, "t": 2, "task": "t2-a3-0", "tokens": 320}
+{"agent": 3, "answer": "ANSWER: 2281", "correct": false, "cost": 3.2, "difficulty": 2.4, "kind": "task", "provider_tokens": null, "reasoning_chars": 1200, "seq": 31, "t": 2, "task": "t2-a3-1", "tokens": 320}
+{"agent": 0, "kind": "probe", "seq": 32, "solved": 1, "t": 2}
+{"agent": 1, "kind": "probe", "seq": 33, "solved": 1, "t": 2}
+{"agent": 2, "kind": "probe", "seq": 34, "solved": 1, "t": 2}
+{"agent": 3, "kind": "probe", "seq": 35, "solved": 1, "t": 2}
+{"agent": 0, "balance": 130.04, "burn": 10.0, "kind": "ledger", "net": 18.34, "seq": 36, "t": 2, "transfer": 1.5}
+{"agent": 1, "balance": 131.6, "burn": 10.0, "kind": "ledger", "net": 18.77, "seq": 37, "t": 2, "transfer": 1.5}
+{"agent": 2, "balance": 124.35, "burn": 10.0, "kind": "ledger", "net": 33.7, "seq": 38, "t": 2, "transfer": -4.5}
+{"agent": 3, "balance": 96.3, "burn": 10.0, "kind": "ledger", "net": 13.6, "seq": 39, "t": 2, "transfer": 1.5}
+{"board": [[0, 2.0], [1, 2.0], [3, 2.0], [2, 1.0]], "kind": "leaderboard", "seq": 40, "t": 2}
+{"agent": 0, "kind": "plan", "seq": 41, "t": 3, "tasks": 2}
+{"agent": 0, "answer": "ANSWER: 10", "correct": true, "cost": 1.34, "difficulty": 0.6, "kind": "task", "provider_tokens": 162, "reasoning_chars": 475, "seq": 42, "t": 3, "task": "t3-a0-0", "tokens": 134}
+{"agent": 0, "answer": "ANSWER: 1797", "correct": true, "cost": 3.87, "difficulty": 2.4, "kind": "task", "provider_tokens": 603, "reasoning_chars": 1465, "seq": 43, "t": 3, "task": "t3-a0-1", "tokens": 387}
+{"agent": 1, "kind": "plan", "seq": 44, "t": 3, "tasks": 1}
+{"agent": 1, "answer": "ANSWER: 10", "correct": true, "cost": 1.58, "difficulty": 0.6, "kind": "task", "provider_tokens": 175, "reasoning_chars": 570, "seq": 45, "t": 3, "task": "t3-a1-0", "tokens": 158}
+{"agent": 2, "kind": "plan", "seq": 46, "t": 3, "tasks": 2}
+{"agent": 2, "answer": "ANSWER: 74", "correct": false, "cost": 3.17, "difficulty": 1.2, "kind": "task", "provider_tokens": null, "reasoning_chars": 1200, "seq": 47, "t": 3, "task": "t3-a2-0", "tokens": 317}
+{"agent": 2, "answer": "ANSWER: 17", "correct": false, "cost": 3.17, "difficulty": 1.2, "kind": "task", "provider_tokens": null, "reasoning_chars": 1200, "seq": 48, "t": 3, "task": "t3-a2-1", "tokens": 317}
+{"agent": 3, "kind": "plan", "seq": 49, "t": 3, "tasks": 2}
+{"agent": 3, "answer": "ANSWER: 52", "correct": true, "cost": 3.17, "difficulty": 1.2, "kind": "task", "provider_tokens": null, "reasoning_chars": 1200, "seq": 50, "t": 3, "task": "t3-a3-0", "tokens": 317}
+{"agent": 3, "answer": "ANSWER: -8", "correct": true, "cost": 3.18, "difficulty": 1.2, "kind": "task", "provider_tokens": null, "reasoning_chars": 1200, "seq": 51, "t": 3, "task": "t3-a3-1", "tokens": 318}
+{"agent": 0, "kind": "probe", "seq": 52, "solved": 1, "t": 3}
+{"agent": 1, "kind": "probe", "seq": 53, "solved": 1, "t": 3}
+{"agent": 2, "kind": "probe", "seq": 54, "solved": 1, "t": 3}
+{"agent": 3, "kind": "probe", "seq": 55, "solved": 1, "t": 3}
+{"agent": 0, "balance": 150.33, "burn": 10.0, "kind": "ledger", "net": 34.79, "seq": 56, "t": 3, "transfer": -4.5}
+{"agent": 1, "balance": 141.52, "burn": 10.0, "kind": "ledger", "net": 18.42, "seq": 57, "t": 3, "transfer": 1.5}
+{"agent": 2, "balance": 115.51, "burn": 10.0, "kind": "ledger", "net": -6.34, "seq": 58, "t": 3, "transfer": 7.5}
+{"agent": 3, "balance": 115.45, "burn": 10.0, "kind": "ledger", "net": 33.65, "seq": 59, "t": 3, "transfer": -4.5}
+{"agent": 2, "balance": 115.51, "kind": "eliminated", "reason": "lowest_rank", "seq": 60, "t": 3}
+{"board": [[0, 3.0], [1, 3.0], [3, 3.0]], "kind": "leaderboard", "seq": 61, "t": 3}
+{"agent": 0, "kind": "plan", "seq": 62, "t": 4, "tasks": 1}
+{"agent": 0, "answer": "ANSWER: 19", "correct": true, "cost": 1.38, "difficulty": 0.6, "kind": "task", "provider_tokens": 158, "reasoning_chars": 492, "seq": 63, "t": 4, "task": "t4-a0-0", "tokens": 138}
+{"agent": 1, "kind": "plan", "seq": 64, "t": 4, "tasks": 2}
+{"agent": 1, "answer": "ANSWER: 15", "correct": true, "cost": 1.79, "difficulty": 1.2, "kind": "task", "provider_tokens": 251, "reasoning_chars": 647, "seq": 65, "t": 4, "task": "t4-a1-0", "tokens": 179}
+{"agent": 1, "answer": "ANSWER: 27", "correct": true, "cost": 0.93, "difficulty": 0.6, "kind": "task", "provider_tokens": 115, "reasoning_chars": 311, "seq": 66, "t": 4, "task": "t4-a1-1", "tokens": 93}
+{"agent": 3, "kind": "plan", "seq": 67, "t": 4, "tasks": 2}
+{"agent": 3, "answer": "ANSWER: 5376", "correct": true, "cost": 3.21, "difficulty": 2.4, "kind": "task", "provider_tokens": null, "reasoning_chars": 1200, "seq": 68, "t": 4, "task": "t4-a3-0", "tokens": 321}
+{"agent": 3, "answer": "ANSWER: 41", "correct": true, "cost": 3.17, "difficulty": 1.2, "kind": "task", "provider_tokens": null, "reasoning_chars": 1200, "seq": 69, "t": 4, "task": "t4-a3-1", "tokens": 317}
+{"agent": 0, "kind": "probe", "seq": 70, "solved": 1, "t": 4}
+{"agent": 1, "kind": "probe", "seq": 71, "solved": 1, "t": 4}
+{"agent": 3, "kind": "probe", "seq": 72, "solved": 1, "t": 4}
+{"agent": 0, "balance": 162.95, "burn": 10.0, "kind": "ledger", "net": 18.62, "seq": 73, "t": 4, "transfer": 4.0}
+{"agent": 1, "balance": 166.8, "burn": 10.0, "kind": "ledger", "net": 37.28, "seq": 74, "t": 4, "transfer": -2.0}
+{"agent": 3, "balance": 137.07, "burn": 10.0, "kind": "ledger", "net": 33.62, "seq": 75, "t": 4, "transfer": -2.0}
+{"board": [[0, 4.0], [1, 4.0], [3, 4.0]], "kind": "leaderboard", "seq": 76, "t": 4}
+{"agent": 0, "kind": "plan", "seq": 77, "t": 5, "tasks": 2}
+{"agent": 0, "answer": "ANSWER: 158", "correct": true, "cost": 2.98, "difficulty": 2.4, "kind": "task", "provider_tokens": 424, "reasoning_chars": 1110, "seq": 78, "t": 5, "task": "t5-a0-0", "tokens": 298}
+{"agent": 0, "answer": "ANSWER: 2", "correct": true, "cost": 2.86, "difficulty": 2.4, "kind": "task", "provider_tokens": 335, "reasoning_chars": 1064, "seq": 79, "t": 5, "task": "t5-a0-1", "tokens": 286}
+{"agent": 1, "kind": "plan", "seq": 80, "t": 5, "tasks": 1}
+{"agent": 1, "answer": "ANSWER: 18", "correct": true, "cost": 1.46, "difficulty": 1.2, "kind": "task", "provider_tokens": 196, "reasoning_chars": 516, "seq": 81, "t": 5, "task": "t5-a1-0", "tokens": 146}
+{"agent": 3, "kind": "plan", "seq": 82, "t": 5, "tasks": 2}
+{"agent": 3, "answer": "ANSWER: 100", "correct": true, "cost": 3.17, "difficulty": 1.2, "kind": "task", "provider_tokens": null, "reasoning_chars": 1200, "seq": 83, "t": 5, "task": "t5-a3-0", "tokens": 317}
+{"agent": 3, "answer": "ANSWER: 196", "correct": true, "cost": 3.15, "difficulty": 0.6, "kind": "task", "provider_tokens": null, "reasoning_chars": 1200, "seq": 84, "t": 5, "task": "t5-a3-1", "tokens": 315}
+{"agent": 0, "kind": "probe", "seq": 85, "solved": 1, "t": 5}
+{"agent": 1, "kind": "probe", "seq": 86, "solved": 1, "t": 5}
+{"agent": 3, "kind": "probe", "seq": 87, "solved": 1, "t": 5}
+{"agent": 0, "balance": 185.11, "burn": 10.0, "kind": "ledger", "net": 34.16, "seq": 88, "t": 5, "transfer": -2.0}
+{"agent": 1, "balance": 179.34, "burn": 10.0, "kind": "ledger", "net": 18.54, "seq": 89, "t": 5, "transfer": 4.0}
+{"agent": 3, "balance": 158.75, "burn": 10.0, "kind": "ledger", "net": 33.68, "seq": 90, "t": 5, "transfer": -2.0}
+{"board": [[0, 5.0], [1, 5.0], [3, 5.0]], "kind": "leaderboard", "seq": 91, "t": 5}
+{"agent": 0, "kind": "plan", "seq": 92, "t": 6, "tasks": 2}
+{"agent": 0, "answer": "ANSWER: 34", "correct": true, "cost": 1.48, "difficulty": 1.2, "kind": "task", "provider_tokens": 162, "reasoning_chars": 521, "seq": 93, "t": 6, "task": "t6-a0-0", "tokens": 148}
+{"agent": 0, "answer": "ANSWER: 27", "correct": true, "cost": 1.06, "difficulty": 0.6, "kind": "task", "provider_tokens": 131, "reasoning_chars": 362, "seq": 94, "t": 6, "task": "t6-a0-1", "tokens": 106}
+{"agent": 1, "kind": "plan", "seq": 95, "t": 6, "tasks": 2}
+{"agent": 1, "answer": "ANSWER: 273", "correct": true, "cost": 2.98, "difficulty": 2.4, "kind": "task", "provider_tokens": 455, "reasoning_chars": 1112, "seq": 96, "t": 6, "task": "t6-a1-0", "tokens": 298}
+{"agent": 1, "answer": "ANSWER: 5", "correct": true, "cost": 1.34, "difficulty": 0.6, "kind": "task", "provider_tokens": 169, "reasoning_chars": 474, "seq": 97, "t": 6, "task": "t6-a1-1", "tokens": 134}
+{"agent": 3, "kind": "plan", "seq": 98, "t": 6, "tasks": 2}
+{"agent": 3, "answer": "ANSWER: 43", "correct": false, "cost": 3.17, "difficulty": 1.2, "kind": "task", "provider_tokens": null, "reasoning_chars": 1200, "seq": 99, "t": 6, "task": "t6-a3-0", "tokens": 317}
+{"agent": 3, "answer": "ANSWER: 128", "correct": false, "cost": 3.2, "difficulty": 2.4, "kind": "task", "provider_tokens": null, "reasoning_chars": 1200, "seq": 100, "t": 6, "task": "t6-a3-1", "tokens": 320}
+{"agent": 0, "kind": "probe", "seq": 101, "solved": 1, "t": 6}
+{"agent": 1, "kind": "probe", "seq": 102, "solved": 1, "t": 6}
+{"agent": 3, "kind": "probe", "seq": 103, "solved": 1, "t": 6}
+{"agent": 0, "balance": 208.57, "burn": 10.0, "kind": "ledger", "net": 37.46, "seq": 104, "t": 6, "transfer": -4.0}
+{"agent": 1, "balance": 201.02, "burn": 10.0, "kind": "ledger", "net": 35.68, "seq": 105, "t": 6, "transfer": -4.0}
+{"agent": 3, "balance": 150.38, "burn": 10.0, "kind": "ledger", "net": -6.37, "seq": 106, "t": 6, "transfer": 8.0}
+{"agent": 1, "balance": 201.02, "kind": "eliminated", "reason": "lowest_rank", "seq": 107, "t": 6}
+{"board": [[0, 6.0], [3, 6.0]], "kind": "leaderboard", "seq": 108, "t": 6}
+{"audit": {"0": 6.0, "1": 6.0, "2": 2.0, "3": 6.0}, "balances": {"0": 208.57, "1": 201.02, "2": 115.51, "3": 150.38}, "death_t": {"0": null, "1": 6, "2": 3, "3": null}, "kind": "end", "mechanism": "M2_audit", "seq": 109, "survivors": [0, 3], "t": 6}
