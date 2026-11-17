@@ -1,0 +1,232 @@
+% Project Traze -- IEEE two-column draft 2 (target: at most 5 pages).
+% Written after a second, independent literature search (see ../../reports/LLM survival economy benchmarks.md).
+% Build:  python3 -I make_ieee.py; pdflatex main; bibtex main; pdflatex main; pdflatex main
+% (needs IEEEtran and pgfplots; both are on Overleaf)
+
+\documentclass[conference]{IEEEtran}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+
+\input{generated/ieee_numbers}
+\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
+
+\begin{document}
+
+\title{Does the Removal Rule Decide the Ranking?\\A Planted-Skill Test for AI Survival Games}
+
+\author{\IEEEauthorblockN{Aryan and Shomya}
+\IEEEauthorblockA{Project Traze (open-source research project)\\
+\todo{affiliations and contact e-mail}}}
+
+\maketitle
+
+\begin{abstract}
+AI agents are now tested in small economies. They earn and spend points, weak agents are removed, and the final order is used to say who is best. Making agents pay for their own words is not new. What is missing is a test of whether the \emph{removal rule} and the \emph{tax rule} give an order that matches real skill. We test this in a game called Traze, with skill planted in scripted players so that the true order is known. A tax on top ranks and a bonus for middle ranks pays a player to do worse, which is an old fact in tax and sports research. In simulation it also gives a poor ranking. The biggest fix is to remove weak players slowly instead of all at once, and a plain tournament with no economy does just as well. Charging for time instead of words lets slow computers lose. We also built an open tool and tried it on a small local model. We give a plan for the real study.
+\end{abstract}
+
+\begin{IEEEkeywords}
+AI agents, benchmarks, fair ranking, elimination rules, resource limits
+\end{IEEEkeywords}
+
+\section{Introduction}
+Many tests now put AI agents in a small economy. An agent may run a shop \cite{backlund2025vendingbench}, trade in a supply chain \cite{zheng2026marketbench,sugiura2026coffeebench}, plan in a busy market \cite{hu2026ecogym}, manage a company's cash \cite{han2026cfo}, or stay alive on a limited energy budget \cite{hansen2026energy}. Profit, survival time, or rank is then read as a sign of skill.
+
+That only works if the rules are fair. If the rules pay an agent for doing worse, the result shows the rules. If the rules count seconds, the result shows how fast the computer is. If the rules remove the best agents early, the result shows luck. We call the match between the final order and real skill the \emph{rank match}. A rank match of 1 is perfect, and 0 is no better than a guess.
+
+\textbf{What is not new.} Making agents pay for their own words and switching them off at zero is already done \cite{hansen2026energy,zhou2026credit}. The fact that a rank tax pays players to hold back is an old idea from tax and sports research \cite{kleven2013notches,dagaev2018winning}. That slow removal beats a one-shot cut is expected from the theory of noisy ranking \cite{jamieson2015halving,braverman2007noisy}.
+
+\textbf{What we add.} To our knowledge, nobody has tested, with skill planted so the true order is known, how the removal rule and the tax rule change the rank match of an agent economy. We do this in Traze: ten agents earn points by solving tasks, pay points for the words they write, and are ranked in public. The original design taxes the top three ranks, gives a bonus to ranks four and five, and removes the other five after round one.
+
+\textbf{Results.}
+\begin{enumerate}
+\item Removal timing matters most. A tax shared in proportion to earnings is neutral. A tax on ranks hurts (Section~\ref{sec:sim}).
+\item A bare tournament with no economy matches the best rule (Section~\ref{sec:sim}).
+\item Charging for time breaks the ranking when hardware differs (Section~\ref{sec:sim}).
+\item We built an open tool and ran three short tests with a small local model (Section~\ref{sec:engine}).
+\end{enumerate}
+We do \emph{not} claim that AI models want to survive. We have no results from a full study with real models yet.
+
+\section{Related Work}
+\textbf{Survival and limited budgets.} In the Energy Society \cite{hansen2026energy}, every written word costs energy, and an agent with no energy is switched off. It compares competition and cooperation. Masumori and Ikegami \cite{masumori2025survival} study how agents react to scarcity in a grid world. Death in both is a fixed threshold, not a rank.
+
+\textbf{Economic tests and cost.} Vending-Bench \cite{backlund2025vendingbench} scores one agent that runs a business. Market-Bench, CoffeeBench, EcoGym and a company-cash test add competition and more settings \cite{zheng2026marketbench,sugiura2026coffeebench,hu2026ecogym,han2026cfo}. Zhou et al.\ \cite{zhou2026credit} bill coding agents in credits for their own compute. Their main results set the weight on wall-clock time to zero, because network delay is unfair across providers. This supports our choice to count words, not seconds. Kapoor et al.\ \cite{kapoor2024agents} also ask for token counts to be reported with cost. Major providers bill hidden thinking as output \cite{openai2026reasoning,anthropic2026thinking}, and one tokeniser can need many more tokens than another for the same text in some languages \cite{petrov2023tokenizers}.
+
+\textbf{Elimination games and ranking.} Agent Island \cite{murphy2026agentisland} is a seven-player game ranked with a Bayesian Plackett--Luce model. Its authors report a same-provider bias in votes (8.3 points), which shows how peer votes can blur a skill signal. As far as we could tell, it does not check its ranking against known skill.
+
+\textbf{Rank incentives.} Contest theory assumes prizes do not grow with worse rank. Tax studies find bunching at tax notches \cite{kleven2013notches,saez2010taxpayers,kleven2016bunching}, and sports studies show teams that lose on purpose when a bad result pays \cite{dagaev2018winning}. Theory on noisy ranking supports removing players gradually as evidence builds \cite{jamieson2015halving,braverman2007noisy}.
+
+\textbf{Pressure and safety.} Other work studies lying \cite{scheurer2023large}, scheming \cite{meinke2024frontier}, harmful acts \cite{lynch2025agentic}, resisting shutdown \cite{schlatter2025incomplete}, and shared resources \cite{piatti2024cooperate}.
+
+We searched for earlier tests of how removal and tax rules change the rank match and found none, but the search was limited, and we read most papers only at abstract level.
+
+\section{The Traze Game}
+\label{sec:game}
+\textbf{Players and rounds.} Ten agents play $T=60$ rounds. Each has a hidden skill and starts with $e_0=10$ points.
+
+\textbf{Tasks and cost.} In each round an agent may try up to five paid tasks. A solved task pays $R=20$. Every word the agent writes costs points, including hidden thinking. Under \emph{token counting}, cost depends only on text length. Under \emph{time counting}, the same text costs more on a slower computer.
+
+\textbf{Points update.} For agent $i$ in round $t$:
+\begin{equation}
+b_i(t{+}1)=b_i(t)+\text{earned}_i-\text{cost}_i-\gamma+w_i,
+\label{eq:ledger}
+\end{equation}
+where $\gamma=10$ is a fixed living cost and $w_i$ is a transfer set by the rule. An agent with $b_i\le 0$ is removed.
+
+\textbf{Three rule sets.}
+\begin{itemize}
+\item \textbf{M0 (original).} Rank agents by total earnings. Ranks 1--3 pay 50 points, ranks 4--5 get 50, and ranks 6--10 are removed after round one.
+\item \textbf{M1.} Everyone pays 30\% of earnings into a pool, shared equally. The lowest-ranked agent is removed every six rounds until three remain.
+\item \textbf{M2.} Same as M1, but ranking uses an \emph{audit score}: the solve rate on fixed test tasks that every agent must try, with no reward and no way to hold back.
+\end{itemize}
+Ties are broken by a new random draw at each check.
+
+\section{Why a Rank Tax Is Unfair}
+\label{sec:theory}
+This section states an elementary fact, in the spirit of the tax and sports results above. Call a rule \emph{fair to effort} if earning more never leaves an agent with fewer points after the rule is applied.
+
+\begin{lemma}\label{lem:fair}
+A rank-based rule is fair to effort if and only if the transfer never gets bigger as the rank number gets bigger.
+\end{lemma}
+\begin{proof}
+If transfers never grow with the rank number, moving up never lowers the transfer, and the earnings also go up, so the total goes up. Now suppose rank $k$ pays less than rank $k+1$. Take an agent at rank $k$ just above the agent at rank $k+1$. If it drops just below, its total rises by the gap in transfers minus a tiny loss. So earning less pays.
+\end{proof}
+
+\begin{proposition}\label{prop:sandbag}
+Rule M0 is not fair to effort. An agent that moves from rank 3 to rank 4 gains $50+50=100$ points per round, ten times the living cost. Rule M1 is fair to effort.
+\end{proposition}
+\begin{proof}
+Rank 3 pays $-50$ and rank 4 pays $+50$, so Lemma~\ref{lem:fair} applies. Under M1, an agent's total is $(1-r)g_i+\tfrac{r}{n}\sum_j g_j$ with $r=0.3$ and earnings $g_i$. It grows by $1-r+r/n=0.73$ for each extra point earned.
+\end{proof}
+
+\textbf{A simple example.} Ana is ranked third and Ben fourth. Ana pays 50 each round and Ben receives 50. If Ana earns a little less than Ben, they swap places. Ana now receives 50 instead of paying 50, which is 100 points better. A smart player will do this. Tax studies warn that many people do not react to such notches because of friction \cite{kleven2013notches}, so we test the effect in simulation instead of assuming it.
+
+\begin{proposition}\label{prop:first}
+Under M0, a top-three agent survives the first check only if its first-round net earnings are above $50+10-10=50$. Agents at ranks 4 and 5 always survive.
+\end{proposition}
+\begin{proof}
+After round one, $b_i=10+\text{net}_i-10+w$. Put $w=-50$ or $w=+50$.
+\end{proof}
+
+So if hard tasks mean few agents earn above 50 in round one, the best early performers are removed first. Time counting also makes a slow computer pay more for the same work, and ranking by earnings alone punishes an agent that saves points by thinking less.
+
+\section{Simulation with Scripted Players}
+\label{sec:sim}
+\textbf{What this is.} The players are scripts, not AI models, and skill is planted, so the true order is known. The results describe the \emph{rules}, not model behaviour.
+
+\textbf{Setup.} Each colony has ten players with skills spread evenly over $[0.45,0.95]$ (``strong'') or $[0.25,0.70]$ (``weak''). A task has difficulty $\delta\in\{0.6,1.2,2.4\}$. A player thinking at depth $d$ solves it with chance $\theta^{\delta/\sqrt d}$, where $\theta$ is its skill. \emph{Honest} players always work at full effort. \emph{Strategic} players pick effort each round to maximise their next payoff. We ran 300 colonies per setting. The \emph{rank match} is the Spearman correlation between skill and survival time. We also report Harrell's $C$, which handles ties and players still alive at the end, but it can lean too high when most players are still alive, a known problem in survival analysis that we did not measure here.
+
+\subsection{Which rule matters?}
+Table~\ref{tab:rules} separates the tax rule, the removal timing, and the ranking method. Higher is better. The first three rows use the original rank tax, the next three use the shared tax, and the last rows have no tax or no economy at all.
+
+\begin{table}[!t]
+\caption{Rank match in a strong colony (1 is perfect). ``One-shot'' removes five agents after round one. ``Gradual'' removes one agent every six rounds.}
+\label{tab:rules}
+\centering
+\small
+\begin{tabular}{@{}lllcc@{}}
+\toprule
+Tax rule & Removal & Ranking & Honest & Strategic \\
+\midrule
+\input{generated/tab_rules}
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Removal timing matters most.} With the shared tax, removing five agents after one noisy round gives \NVLinCull{}. Removing agents slowly gives \NVLinGrad{} (\NVLinGradAudit{} with the audit score). Noisy-ranking theory predicts this direction \cite{jamieson2015halving}, and we measure its size.
+
+\textbf{A shared tax is neutral. A rank tax is harmful.} With no tax at all and slow removal, the score is \NVLinGradAudit{}, the same as with the shared tax. A bare tournament with no economy gets \NVBare{}. So the high score of M1 and M2 comes from slow removal, not from the economy. Under the original rule M0, honest players score only \NVMzeroH{}, and strategic players hold back (mean effort \NMidEffMyopic{} instead of 1.0). With slow removal and ranking by earnings, honest players lose little (\NVLinGrad{} falls to \NVRankGradGrossH{}) but strategic players lose a lot (\NVRankGradGrossS{}). With the audit score, the tax lands on the players the audit ranks best, and the score falls to \NVRankGradAuditH{}. In a weak colony this turns the ranking upside down (\NVWeakInverted{}) and \NExtWeakInverted{} of colonies die out. Under M0 alone, \NExtWeakMzero{} of weak colonies die out.
+
+\textbf{Ties and unfinished lives.} On Harrell's $C$, M0 scores \NCMzeroH{} and M2 scores \NCMtwoH{}. The order is the same, but the gap is smaller than the Spearman numbers suggest.
+
+\subsection{Time counting versus token counting}
+Figure~\ref{fig:results}(a) uses ten computers with different speeds. When thinking is cheap, the two methods agree. When it costs more, counting time lowers the rank match from \NHwTokFour{} to \NHwTimeFour{} (price 4) and from \NHwTokEight{} to \NHwTimeEight{} (price 8). The speed spread is our assumption. We have not measured real speed differences, so this shows how big the effect could be, not how big it is.
+
+\begin{figure*}[!t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=0.46\textwidth,height=4.3cm,title={\scriptsize (a) Hardware speed},xlabel={Cost of one thinking step},ylabel={Rank match},
+ ymin=0,ymax=1.05,xtick={1.5,4,8},grid=major,legend pos=south west,
+ legend style={font=\scriptsize},tick label style={font=\scriptsize},label style={font=\scriptsize},
+ every axis plot/.append style={thick,mark size=1.6pt}]
+\addplot[black,mark=*] coordinates {\CoordsHwTok};
+\addplot[black,mark=square*,dashed] coordinates {\CoordsHwTime};
+\legend{Count tokens,Count time}
+\end{axis}
+\end{tikzpicture}\hfill
+\begin{tikzpicture}
+\begin{axis}[width=0.46\textwidth,height=4.3cm,title={\scriptsize (b) Number of audit tasks},xlabel={Audit tasks per round},ylabel={Rank match},
+ ymin=0,ymax=1.05,xmode=log,xtick={1,3,10},xticklabels={1,3,10},grid=major,legend pos=south east,
+ legend style={font=\scriptsize},tick label style={font=\scriptsize},label style={font=\scriptsize},
+ every axis plot/.append style={thick,mark size=1.6pt}]
+\addplot[black,mark=*] coordinates {\CoordsProbeOne};
+\addplot[black,mark=square*,dashed] coordinates {\CoordsProbeTwo};
+\legend{Rank by earnings,Rank by audit}
+\end{axis}
+\end{tikzpicture}
+\caption{Rank match under the shared-tax rules (strong colony). (a) Ten computers with different speeds: counting time breaks the ranking once thinking costs more. (b) The audit score needs enough tasks: with one task per round, ranking by earnings does better.}
+\label{fig:results}
+\end{figure*}
+
+\subsection{Other checks}
+\textbf{Thinking depth.} Players that choose how deeply to think do better when words cost more. At the highest price, players with fixed depth run out of points after about \NDepthFixedEight{} rounds, while adaptive players last about \NDepthAdaptiveEight{} of 60.
+
+\textbf{Parameter sweeps.} We changed the tax, the sharing rate, the removal period, the number of audit tasks, the number of paid tasks, the reward, the colony size, and the spread of skills. The audit-based rule M2 beat M0 in all \NSweepCount{} cases we ran (\NSweepBelow{} exceptions; median gain \NSweepMedian{}, smallest \NSweepMin{}). M0 fails when income is low (reward 10 gives \NLowIncomeMzero{}). With only one audit task per round, ranking by earnings does better (\NProbesOneOne{} against \NProbesOneTwo{}).
+
+\textbf{Smarter players.} A player that plans six rounds ahead holds back even more under M0 (effort \NMidEffLook{}). The audit rule M2 stays at about the same level.
+
+\section{The Open Tool and First Tests}
+\label{sec:engine}
+\textbf{The tool.} Our open engine gives agents auto-graded tasks of four kinds: arithmetic chains, modular powers, digit sums, and Collatz steps. It counts all text an agent writes, including hidden thinking, with one fixed letters-per-word rule. This treats models with different tokenisers the same, but it is our own design and has no precedent that we found. Every event goes into a log with a running hash, so a run with the same seed repeats exactly. The code has 25 tests and agrees with the simulator. The audit tasks are a simple idea, and we did not search for earlier audit mechanisms, so we do not call them new.
+
+\textbf{First tests.} We ran three short colonies of two copies of one 8B reasoning model plus two scripted agents (Table~\ref{tab:live}). These runs check the tool. They tell us nothing about model behaviour.
+
+\begin{table}[!t]
+\caption{First tests with a local model (language-model agents only). ``Plan share'' is the share of spending on planning. ``Plan cut off'' counts planning answers stopped by the length limit.}
+\label{tab:live}
+\centering
+\small
+\begin{tabular}{@{}rrccccc@{}}
+\toprule
+Run & Rounds & Right & Cut off & Plan share & Plan cut off & Letters/token \\
+\midrule
+\input{generated/tab_live}
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{What we learned.}
+(1) The tool must count hidden thinking, which the local server returned in a separate field.
+(2) Run 1 tasks were too easy (19 of 19 right). Harder tasks gave 8 of 15 in run 2.
+(3) A length limit cut off 7 of 15 answers in run 2, so those misses show the limit, not skill. Cut-offs must be reported on their own.
+(4) Planning took 43\% of spending in run 2, and in run 3 every planning answer was cut off, so each plan was a default. Defaults must be logged.
+(5) Letters per token ranged from 1.9 to 2.7, so counting letters is a fair way to price text, but it does not map to real tokens with one constant.
+
+\section{Plan for the Real Study}
+We will draw colonies of ten agents at random from several open models. The arms are the original rule M0, the audit rule M2, and a bare tournament. We will test three ideas. (H1) Under M0, agents in ranks 4--5 bunch just below rank 3, but not under M2. (H2) The rank match against an independent skill test is higher under M2 than under M0, and the bare tournament shows how much comes from the economy itself. (H3) When thinking costs more, agents think less, and ranking by earnings hurts efficient agents. We will run at least 20 colonies per arm, report cut-offs and defaults separately, combine results with a Plackett--Luce model \cite{murphy2026agentisland}, and never let a model judge its own family. We avoid peer votes, because votes can carry bias \cite{murphy2026agentisland}.
+
+\section{Limits}
+We have no results from a full study with real models, and real model skill cannot be planted, so we will need an outside skill test. The simulated players are scripts, and the numbers were chosen to look like the reference setup, so only the directions are safe to trust. The audit score works like a plain test inside the economy, and a bare tournament matches it, so the economy must still show it adds something (H3). Our literature search was limited, and most papers were read only at abstract level. We tried only arithmetic-style tasks. Trading, teaming up, and cheating on the audit are not tested yet.
+
+\section{Conclusion}
+The rules of a survival game decide what its ranking means. Our test with planted skill shows that removing weak players slowly fixes most of the problem, a rank tax pays players to hold back, counting time lets slow computers lose, and a bare tournament does the same job as the economy. The open tool and the plan make the real test possible: does the economy show anything that a plain test does not?
+
+\section*{Acknowledgment and AI Use}
+The tool, the simulator, the scripts, the literature search and this draft were made with a lot of help from an AI system (Claude, Anthropic). The authors must check every number, proof and citation. \todo{authors: confirm wording and funding}
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}
