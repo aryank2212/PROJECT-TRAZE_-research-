@@ -25,16 +25,16 @@
 
 \begin{document}
 
-\title{Does the Removal Rule Decide the Ranking?\\A Planted-Skill Test for AI Survival Games}
+\title{Agent Battle Royale:\\Survival of the Fittest, or of the Rules?}
 
-\author{\IEEEauthorblockN{Aryan and Shomya}
-\IEEEauthorblockA{Project Traze (open-source research project)\\
+\author{\IEEEauthorblockN{Aryan}
+\IEEEauthorblockA{Project Traze\\
 \todo{affiliations and contact e-mail}}}
 
 \maketitle
 
 \begin{abstract}
-AI agents are now tested in small economies. They earn and spend points, weak agents are removed, and the final order is used to say who is best. Making agents pay for their own words is not new. What is missing is a test of whether the \emph{removal rule} and the \emph{tax rule} give an order that matches real skill. We test this in a game called Traze, with skill planted in scripted players so that the true order is known. A tax on top ranks and a bonus for middle ranks pays a player to do worse, which is an old fact in tax and sports research. In simulation it also gives a poor ranking. The biggest fix is to remove weak players slowly instead of all at once, and a plain tournament with no economy does just as well. Charging for time instead of words lets slow computers lose. We also built an open tool and tried it on a small local model. We give a plan for the real study.
+AI agents are now tested in small economies. They earn and spend points, weak agents are removed, and the final order is used to say who is best. Making agents pay for their own words is not new. What is missing is a test of whether the \emph{removal rule} and the \emph{tax rule} give an order that matches real skill. We test this in a game called Traze, with skill planted in scripted players so that the true order is known. A tax on top ranks and a bonus for middle ranks pays a player to do worse, which is an old fact in tax and sports research. In simulation it also gives a poor ranking. The biggest fix is to remove weak players slowly instead of all at once, and a plain tournament with no economy does just as well. Charging for time instead of words lets slow computers lose. We also built a tool and tried it on a small local model. We give a plan for the real study.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -55,7 +55,7 @@ That only works if the rules are fair. If the rules pay an agent for doing worse
 \item Removal timing matters most. A tax shared in proportion to earnings is neutral. A tax on ranks hurts (Section~\ref{sec:sim}).
 \item A bare tournament with no economy matches the best rule (Section~\ref{sec:sim}).
 \item Charging for time breaks the ranking when hardware differs (Section~\ref{sec:sim}).
-\item We built an open tool and ran three short tests with a small local model (Section~\ref{sec:engine}).
+\item We built a tool and ran three short tests with a small local model (Section~\ref{sec:engine}).
 \end{enumerate}
 We do \emph{not} claim that AI models want to survive. We have no results from a full study with real models yet.
 
@@ -187,9 +187,9 @@ Figure~\ref{fig:results}(a) uses ten computers with different speeds. When think
 
 \textbf{Smarter players.} A player that plans six rounds ahead holds back even more under M0 (effort \NMidEffLook{}). The audit rule M2 stays at about the same level.
 
-\section{The Open Tool and First Tests}
+\section{The Tool and First Tests}
 \label{sec:engine}
-\textbf{The tool.} Our open engine gives agents auto-graded tasks of four kinds: arithmetic chains, modular powers, digit sums, and Collatz steps. It counts all text an agent writes, including hidden thinking, with one fixed letters-per-word rule. This treats models with different tokenisers the same, but it is our own design and has no precedent that we found. Every event goes into a log with a running hash, so a run with the same seed repeats exactly. The code has 25 tests and agrees with the simulator. The audit tasks are a simple idea, and we did not search for earlier audit mechanisms, so we do not call them new.
+\textbf{The tool.} Our engine gives agents auto-graded tasks of four kinds: arithmetic chains, modular powers, digit sums, and Collatz steps. It counts all text an agent writes, including hidden thinking, with one fixed letters-per-word rule. This treats models with different tokenisers the same, but it is our own design and has no precedent that we found. Every event goes into a log with a running hash, so a run with the same seed repeats exactly. The code has 25 tests and agrees with the simulator. The audit tasks are a simple idea, and we did not search for earlier audit mechanisms, so we do not call them new.
 
 \textbf{First tests.} We ran three short colonies of two copies of one 8B reasoning model plus two scripted agents (Table~\ref{tab:live}). These runs check the tool. They tell us nothing about model behaviour.
 
@@ -221,10 +221,7 @@ We will draw colonies of ten agents at random from several open models. The arms
 We have no results from a full study with real models, and real model skill cannot be planted, so we will need an outside skill test. The simulated players are scripts, and the numbers were chosen to look like the reference setup, so only the directions are safe to trust. The audit score works like a plain test inside the economy, and a bare tournament matches it, so the economy must still show it adds something (H3). Our literature search was limited, and most papers were read only at abstract level. We tried only arithmetic-style tasks. Trading, teaming up, and cheating on the audit are not tested yet.
 
 \section{Conclusion}
-The rules of a survival game decide what its ranking means. Our test with planted skill shows that removing weak players slowly fixes most of the problem, a rank tax pays players to hold back, counting time lets slow computers lose, and a bare tournament does the same job as the economy. The open tool and the plan make the real test possible: does the economy show anything that a plain test does not?
-
-\section*{Acknowledgment and AI Use}
-The tool, the simulator, the scripts, the literature search and this draft were made with a lot of help from an AI system (Claude, Anthropic). The authors must check every number, proof and citation. \todo{authors: confirm wording and funding}
+The rules of a survival game decide what its ranking means. Our test with planted skill shows that removing weak players slowly fixes most of the problem, a rank tax pays players to hold back, counting time lets slow computers lose, and a bare tournament does the same job as the economy. The tool and the plan make the real test possible: does the economy show anything that a plain test does not?
 
 \bibliographystyle{IEEEtran}
 \bibliography{references}
